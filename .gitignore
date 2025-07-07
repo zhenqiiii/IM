@@ -1,2 +1,6 @@
 # vscode配置文件
 .vscode
+
+# air配置及编译文件
+.air.toml
+tmp
