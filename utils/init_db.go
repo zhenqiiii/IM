@@ -1,8 +1,9 @@
-package sql
+package utils
 
 import (
-	"os"
+	"log"
 
+	"github.com/spf13/viper"
 	"github.com/zhenqiiii/IM-GO/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -11,24 +12,22 @@ import (
 // 连接实例
 var db *gorm.DB
 
-// 数据库初始化
-func Init_DB() (err error) {
+// SQL数据库初始化
+func Init_SQL() {
 	// 获取dsn
-	dsn := os.Getenv("SQL_DSN")
+	dsn := viper.GetString("mysql.dsn")
 
 	// 创建连接
+	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	// AutoMigrate
 	db.AutoMigrate(&models.UserBasic{})
-
 	// db.Create(&models.UserBasic{
 	// 	Name:     "test",
 	// 	PassWord: "123",
 	// })
-
-	return nil
 }

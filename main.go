@@ -1,31 +1,28 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
-	"github.com/zhenqiiii/IM-GO/gorm/sql"
+	"log"
+
 	"github.com/zhenqiiii/IM-GO/router"
+	"github.com/zhenqiiii/IM-GO/utils"
 )
 
 func main() {
 	// 加载环境变量
-	err := godotenv.Load("./config/.env")
-	if err != nil {
-		panic(err)
-	}
-
+	// err := godotenv.Load("./config/.env")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	utils.InitConfig()
 	// 初始化sql
-	err = sql.Init_DB()
-	if err != nil {
-		panic(err)
+	utils.Init_SQL()
 
-	}
-
-	// 创建
+	// 创建Router
 	r := router.SetupRouter()
 
 	// Run
-	err = r.Run(":8080")
+	err := r.Run(":8080")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
