@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/zhenqiiii/IM-GO/gorm/sql"
 	"github.com/zhenqiiii/IM-GO/router"
 	"github.com/zhenqiiii/IM-GO/utils"
 )
@@ -15,13 +16,13 @@ func main() {
 	// }
 	utils.InitConfig()
 	// 初始化sql
-	utils.Init_SQL()
+	sql.Init_SQL()
 
 	// 创建Router
 	r := router.SetupRouter()
 
 	// Run
-	err := r.Run(":8080")
+	err := r.Run(":8081")
 	if err != nil {
 		log.Fatal(err)
 	}

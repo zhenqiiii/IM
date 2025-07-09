@@ -1,4 +1,4 @@
-package utils
+package sql
 
 import (
 	"log"
@@ -25,9 +25,14 @@ func Init_SQL() {
 	}
 
 	// AutoMigrate
-	db.AutoMigrate(&models.UserBasic{})
+	db.AutoMigrate(
+		&models.UserBasic{},
+		&models.RoomBasic{},
+		&models.MessageBasic{},
+		&models.User_Room{})
 	// db.Create(&models.UserBasic{
-	// 	Name:     "test",
-	// 	PassWord: "123",
+	// 	UserID:   1234,
+	// 	Account:  "zwy",
+	// 	Password: "1234",
 	// })
 }

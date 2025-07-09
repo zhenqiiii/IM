@@ -2,28 +2,21 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 // 用户结构体
 type UserBasic struct {
-	gorm.Model
-	Name          string `gorm:" type:varchar(255)"`
-	PassWord      string
-	Phone         string
-	Email         string
-	Identity      string
-	ClientIp      string
-	ClientPort    string
-	LoginTime     time.Time
-	HeartbeatTime time.Time
-	LogOutTime    time.Time
-	IsLogout      bool
-	DeviceInfo    string
+	UserID    int64     `json:"userid" gorm:"primaryKey"`
+	Account   string    `json:"account"`
+	Password  string    `json:"password"`
+	Nickname  string    `json:"nickname"`
+	Gender    int       `json:"gender"` // 0-未知 1-男 2-女
+	Email     string    `json:"email"`
+	Avatar    string    `json:"avatar"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// 为什么要定义这个方法？
-func (table *UserBasic) TableName() string {
+func (UserBasic) TableName() string {
 	return "user_basic"
 }

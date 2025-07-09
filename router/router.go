@@ -9,6 +9,9 @@ import (
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	// router
+
+	// login
+	r.POST("/login", controllers.Login())
 	r.GET("/index", controllers.GetIndex())
 
 	return r
