@@ -23,7 +23,12 @@ const emailTemplate = `<!DOCTYPE html>
 </html>
 `
 
-// 封装jordan-wright/email包，发送验证码邮件
+type templateData struct {
+	Code string `json:"code"`
+}
+
+// 发送验证码邮件，使用jordan-wright/email包
+// 但是这样用自己的邮箱发送，一定时间内次数多了会被限制
 func SendCode(userEmail string, code string) error {
 	// 处理邮件html模板
 	// 解析模板
@@ -33,16 +38,44 @@ func SendCode(userEmail string, code string) error {
 		return err
 	}
 	// 渲染模板,渲染后的结果会返回给body
+	data := templateData{
+		Code: code,
+	}
 	var body bytes.Buffer
-	if err = tpl.Execute(&body, code); err != nil {
+	if err = tpl.Execute(&body, data); err != nil {
 		log.Println("渲染模板失败: " + err.Error())
 		return err
 	}
 
+	// // 使用smtp库
+	// user := viper.GetString("smtp.user")
+	// authcode := viper.GetString("smtp.authcode")
+	// // 设置plainAuth
+	// auth := smtp.PlainAuth("", user, authcode, "smtp.qq.com")
+	// // 收件人
+	// receiver := []string{userEmail}
+	// // 邮件内容
+	// from := "From: Zhenqiiii <" + user + ">\r\n"
+	// to := "To: " + userEmail + "\r\n"
+	// subject := "Subject: IM邮箱验证码 \r\n"
+	// contentType := "Content-Type: text/html; charset=\"UTF-8\"\r\n\r\n"
+	// content := body.Bytes()
+	// msg := []byte(from + to + subject + contentType + string(content))
+
+	// // 发送
+	// err = smtp.SendMail("smtp.qq.com:465", auth, user, receiver, msg)
+	// if err != nil {
+	// 	log.Printf("邮件发送失败： %v\n", err)
+	// 	return err
+	// }
+
+	// 读取配置
+	user := viper.GetString("smtp.user")
+	authcode := viper.GetString("smtp.authcode")
 	// 生成邮件实例
 	e := email.NewEmail()
 	// sender
-	e.From = "Zhenqiii <noreply@foxmail.com> "
+	e.From = "Zhenqiiii <" + user + "> "
 	// receiver:注册用户
 	e.To = []string{userEmail}
 	// subject：主题
@@ -50,12 +83,15 @@ func SendCode(userEmail string, code string) error {
 	// html内容:使用template
 	e.HTML = body.Bytes()
 
-	// 发送邮件:使用自己的qq邮箱授权码
-	user := viper.GetString("smtp.user")
-	authcode := viper.GetString("smtp.auth")
-	err = e.Send("smtp.qq.com:25", smtp.PlainAuth("", user, authcode, "smtp.qq.com"))
+	// 发送邮件:使用自己的邮箱授权码
+	err = e.Send("smtp.163.com:25", smtp.PlainAuth("", user, authcode, "smtp.163.com"))
+	// e.SendWithTLS("smtp.qq.com:465",
+	// 	smtp.PlainAuth("", user, authcode, "smtp.qq.com"),
+	// 	&tls.Config{
+	// 		InsecureSkipVerify: true, ServerName: "smtp.qq.com",
+	// 	})
 	if err != nil {
-		log.Println("邮件发送失败: " + err.Error())
+		log.Printf("邮件发送失败: %v\n", err)
 		return err
 	}
 	return nil

@@ -14,5 +14,8 @@ const (
 // 内部错误:3x
 const INTERNAL_ERROR = 30
 
-// 查询不到
-const NOT_FOUND = 40
+// 查询问题
+const (
+	NOT_FOUND      = 40
+	ALREADY_EXISTS = 41
+)
