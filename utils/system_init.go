@@ -18,7 +18,7 @@ func InitConfig() {
 		log.Fatal(err)
 	}
 
-	log.Println("sql_dsn:", viper.GetString("dsn"))
+	// log.Println("sql_dsn:", viper.GetString("dsn"))
 
 	log.Println("Init config successfully")
 }
