@@ -16,13 +16,13 @@ var Secret = []byte("你拿什么抗争")
 // MyClaims 自定义声明类型 内嵌jwt.RegisteredClaims
 // 加入Username字段
 type UserClaims struct {
-	UserID               int64  `json:"userid"`
+	UserID               string `json:"userid"`
 	Email                string `json:"email"`
 	jwt.RegisteredClaims        // 内嵌标准声明
 }
 
 // GenToken 生成JWT字符串
-func GenToken(userid int64, email string) (string, error) {
+func GenToken(userid string, email string) (string, error) {
 	// 创建MyClaims声明
 	claims := UserClaims{
 		userid,

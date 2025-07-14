@@ -5,7 +5,7 @@ go 1.23.7
 require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/golang-jwt/jwt/v5 v5.2.2
-	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
+	github.com/gorilla/websocket v1.5.3
 	github.com/spf13/viper v1.20.1
 	golang.org/x/crypto v0.39.0
 	gorm.io/driver/mysql v1.6.0

@@ -2,13 +2,13 @@ package verification
 
 import (
 	"bytes"
+	"crypto/tls"
 	"html/template"
 	"log"
 	"math/rand/v2"
 	"net/smtp"
 	"strconv"
 
-	"github.com/jordan-wright/email"
 	"github.com/spf13/viper"
 )
 
@@ -27,8 +27,11 @@ type templateData struct {
 	Code string `json:"code"`
 }
 
-// 发送验证码邮件，使用jordan-wright/email包
-// 但是这样用自己的邮箱发送，一定时间内次数多了会被限制
+// 使用qq邮箱时需要设置tls加密，否则就会出现发送验证码成功但依旧报错的情况
+// 而使用网易163邮箱可以直接使用jordan-wright/email包，同时也无需加密
+
+// 这里使用smtp库并显式启用tls加密
+// 发送验证码邮件
 func SendCode(userEmail string, code string) error {
 	// 处理邮件html模板
 	// 解析模板
@@ -47,54 +50,93 @@ func SendCode(userEmail string, code string) error {
 		return err
 	}
 
-	// // 使用smtp库
-	// user := viper.GetString("smtp.user")
-	// authcode := viper.GetString("smtp.authcode")
-	// // 设置plainAuth
-	// auth := smtp.PlainAuth("", user, authcode, "smtp.qq.com")
-	// // 收件人
-	// receiver := []string{userEmail}
-	// // 邮件内容
-	// from := "From: Zhenqiiii <" + user + ">\r\n"
-	// to := "To: " + userEmail + "\r\n"
-	// subject := "Subject: IM邮箱验证码 \r\n"
-	// contentType := "Content-Type: text/html; charset=\"UTF-8\"\r\n\r\n"
-	// content := body.Bytes()
-	// msg := []byte(from + to + subject + contentType + string(content))
-
-	// // 发送
-	// err = smtp.SendMail("smtp.qq.com:465", auth, user, receiver, msg)
-	// if err != nil {
-	// 	log.Printf("邮件发送失败： %v\n", err)
-	// 	return err
-	// }
-
-	// 读取配置
-	user := viper.GetString("smtp.user")
+	// 使用smtp库:qq邮箱
+	sender := viper.GetString("smtp.sender")
 	authcode := viper.GetString("smtp.authcode")
-	// 生成邮件实例
-	e := email.NewEmail()
-	// sender
-	e.From = "Zhenqiiii <" + user + "> "
-	// receiver:注册用户
-	e.To = []string{userEmail}
-	// subject：主题
-	e.Subject = "IM邮箱验证码"
-	// html内容:使用template
-	e.HTML = body.Bytes()
+	// 设置plainAuth
+	auth := smtp.PlainAuth("", sender, authcode, "smtp.qq.com")
+	// 邮件内容
+	from := "From: Zhenqiiii <" + sender + ">\r\n"
+	to := "To: " + userEmail + "\r\n"
+	subject := "Subject: IM邮箱验证码 \r\n"
+	contentType := "Content-Type: text/html; charset=\"UTF-8\"\r\n\r\n"
+	content := body.Bytes()
+	msg := []byte(from + to + subject + contentType + string(content))
 
-	// 发送邮件:使用自己的邮箱授权码
-	err = e.Send("smtp.163.com:25", smtp.PlainAuth("", user, authcode, "smtp.163.com"))
-	// e.SendWithTLS("smtp.qq.com:465",
-	// 	smtp.PlainAuth("", user, authcode, "smtp.qq.com"),
-	// 	&tls.Config{
-	// 		InsecureSkipVerify: true, ServerName: "smtp.qq.com",
-	// 	})
+	// 发送
+	// 创建 tls 配置
+	tlsconfig := &tls.Config{
+		InsecureSkipVerify: true,
+		ServerName:         "smtp.qq.com",
+	}
+	conn, err := tls.Dial("tcp", "smtp.qq.com:465", tlsconfig)
+	if err != nil {
+		log.Printf("TLS连接失败: %v\n", err)
+		return err
+	}
+	defer conn.Close()
+
+	client, err := smtp.NewClient(conn, "smtp.qq.com")
+	if err != nil {
+		log.Printf("smtp客户端创建失败: %v\n", err)
+		return err
+	}
+	defer client.Quit()
+
+	// 使用 auth 进行认证
+	if err = client.Auth(auth); err != nil {
+		log.Printf("邮箱smtp认证失败: %v\n", err)
+		return err
+	}
+
+	// 设置发件人和收件人
+	if err = client.Mail(sender); err != nil {
+		log.Printf("发件人设置失败: %v\n", err)
+		return err
+	}
+	if err = client.Rcpt(userEmail); err != nil {
+		log.Printf("收件人设置失败: %v\n", err)
+		return err
+	}
+
+	// 写入邮件内容
+	wc, err := client.Data()
+	if err != nil {
+		log.Printf("数据写入失败: %v\n", err)
+		return err
+	}
+	defer wc.Close()
+
+	_, err = wc.Write(msg)
 	if err != nil {
 		log.Printf("邮件发送失败: %v\n", err)
 		return err
 	}
+
 	return nil
+
+	// 以下是使用jordan-wright/email包的邮件发送代码,但qq邮箱使用不了,163邮箱可以直接使用
+	// // 读取配置
+	// user := viper.GetString("smtp.sender")
+	// authcode := viper.GetString("smtp.authcode")
+	// // 生成邮件实例
+	// e := email.NewEmail()
+	// // sender
+	// e.From = "Zhenqiiii <" + sender + "> "
+	// // receiver:注册用户
+	// e.To = []string{userEmail}
+	// // subject：主题
+	// e.Subject = "IM邮箱验证码"
+	// // html内容:使用template
+	// e.HTML = body.Bytes()
+
+	// // 发送邮件:使用自己的邮箱授权码
+	// err = e.Send("smtp.163.com:25", smtp.PlainAuth("", sender, authcode, "smtp.163.com"))
+	// if err != nil {
+	// 	log.Printf("邮件发送失败: %v\n", err)
+	// 	return err
+	// }
+	// return nil
 
 }
 

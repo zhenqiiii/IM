@@ -11,3 +11,7 @@ type RoomBasic struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (RoomBasic) TableName() string {
+	return "room_basic"
+}

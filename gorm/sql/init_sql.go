@@ -29,7 +29,7 @@ func Init_SQL() {
 		&models.UserBasic{},
 		&models.RoomBasic{},
 		&models.MessageBasic{},
-		&models.User_Room{})
+		&models.UserRoom{})
 	// db.Create(&models.UserBasic{
 	// 	UserID:   1234,
 	// 	Account:  "zwy",

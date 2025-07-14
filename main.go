@@ -21,6 +21,8 @@ func main() {
 	// 创建Router
 	r := router.SetupRouter()
 
+	// wbskt.GinWebSocketServer()
+
 	// Run
 	err := r.Run(":8081")
 	if err != nil {

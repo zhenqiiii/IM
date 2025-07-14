@@ -37,10 +37,13 @@ func Login() gin.HandlerFunc {
 			return
 		}
 		// 存在，校验密码
-		// 目前存在数据库中的密码是哈希加密的，但从前端传过来的密码是明文
-		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+		// todo:目标是用户输入明文，被前端哈希加密后传过来，然后和数据库中的哈希值比对
+		// 目前存在数据库中的密码以及前端传过来的密码都是明文
+		// 暂时将明文密码在此处加密再比较
+		hashed, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		err = bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password))
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.JSON(http.StatusOK, gin.H{
 				"code": cont.WRONG_PARAMS,
 				"msg":  "密码错误：" + err.Error(),
 			})

@@ -22,6 +22,8 @@ func SetupRouter() *gin.Engine {
 	{
 		// 用户详情
 		userBlock.GET("/detail", controllers.UserDetail())
+		// 发送接收消息
+		userBlock.GET("/msg", controllers.WebsocketMessage())
 	}
 
 	return r
