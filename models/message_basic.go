@@ -11,6 +11,7 @@ type MessageBasic struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// 指定数据库表名
 func (MessageBasic) TableName() string {
 	return "message_basic"
 }

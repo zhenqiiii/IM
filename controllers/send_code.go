@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/zhenqiiii/IM-GO/gorm/sql"
+	"github.com/zhenqiiii/IM-GO/gorm/sqldb"
 	"github.com/zhenqiiii/IM-GO/pkg/verification"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +27,7 @@ func Send_Code() gin.HandlerFunc {
 			return
 		}
 		// 是否已注册
-		exist, err := sql.CheckUserBasicExistByEmail(email)
+		exist, err := sqldb.CheckUserBasicExistByEmail(email)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"code": cont.INTERNAL_ERROR,

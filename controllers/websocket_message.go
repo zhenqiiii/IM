@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/zhenqiiii/IM-GO/cont"
+	"github.com/zhenqiiii/IM-GO/gorm/sqldb"
+	"github.com/zhenqiiii/IM-GO/models"
 	"github.com/zhenqiiii/IM-GO/pkg/jwt"
 )
 
@@ -48,11 +50,11 @@ func WebsocketMessage() gin.HandlerFunc {
 		conns[userInfo.UserID] = conn
 
 		// 循环：持续读取消息内容
-		// 用户自己在客户端发送的消息在此接收，然后分发给所有人
+		// 用户自己在客户端发送的消息在此接收，然后分发给其他用户
 		for {
+			// 获取消息
 			msg := new(MessageBody)
 			err = conn.ReadJSON(msg)
-			// fmt.Println(msg.Message)
 			if err != nil {
 				log.Println("消息接收失败：" + err.Error())
 				// c.JSON(http.StatusOK, gin.H{
@@ -61,13 +63,45 @@ func WebsocketMessage() gin.HandlerFunc {
 				// })
 				return
 			}
-			// 接收成功,发送给所有人(同一聊天室)
-			for _, cc := range conns {
-				// err = cc.WriteMessage(websocket.TextMessage, []byte(msg.Message))
-				err = cc.WriteJSON(msg)
-				if err != nil {
-					log.Println("消息转发失败：" + err.Error())
-					return
+			// 判断用户是否属于消息体中RoomID字段对应的房间
+			// 使用参数：UserID、RoomID	对user_room表进行查询
+			belong, err := sqldb.GetUserRoomByID(userInfo.UserID, msg.RoomID)
+			if err != nil {
+				log.Println("用户-房间关系查询失败：" + err.Error())
+				return
+			}
+			if !belong {
+				log.Println("用户不属于该房间")
+				return
+			}
+			// TODO：保存消息
+			err = sqldb.InsertMessageBasic(models.MessageBasic{
+				UserID: userInfo.UserID, // userclaims获取
+				RoomID: msg.RoomID,      // 消息体
+				Data:   msg.Message,     // 消息体
+			})
+			if err != nil {
+				log.Println("消息保存失败：" + err.Error())
+				return
+			}
+
+			// 获取属于该RoomID房间的所有用户
+			users, err := sqldb.GetUsersByRoomID(msg.RoomID)
+			if err != nil {
+				log.Println("获取房间用户失败：" + err.Error())
+				return
+			}
+			// 用户列表获取成功，遍历用户列表发送消息
+			// 这里通过判断连接池中是否有对应用户来实现将消息只发送给在线用户
+			// 离线用户通过消息历史来查看离线时的消息
+			for _, user := range users {
+				if cc, online := conns[user.UserID]; online {
+					// err = cc.WriteMessage(websocket.TextMessage, []byte(msg.Message))
+					err = cc.WriteJSON(msg)
+					if err != nil {
+						log.Println("消息转发失败：" + err.Error())
+						return
+					}
 				}
 			}
 		}

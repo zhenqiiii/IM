@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/zhenqiiii/IM-GO/cont"
-	"github.com/zhenqiiii/IM-GO/gorm/sql"
+	"github.com/zhenqiiii/IM-GO/gorm/sqldb"
 	"github.com/zhenqiiii/IM-GO/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -27,7 +27,7 @@ func Login() gin.HandlerFunc {
 		}
 
 		// 查询用户是否存在
-		user, err := sql.GetUserBasicByAccount(account)
+		user, err := sqldb.GetUserBasicByAccount(account)
 		if err != nil {
 			log.Println(err)
 			c.JSON(http.StatusOK, gin.H{

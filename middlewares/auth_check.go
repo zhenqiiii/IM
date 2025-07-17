@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,7 @@ func AuthCheck() gin.HandlerFunc {
 		if err != nil {
 			// 中断处理
 			c.Abort()
+			log.Println("token认证不通过：" + err.Error())
 			// 返回响应
 			c.JSON(http.StatusBadRequest, gin.H{
 				"code": cont.WRONG_PARAMS,
