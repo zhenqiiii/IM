@@ -67,6 +67,5 @@ func Login() gin.HandlerFunc {
 				"token": token,
 			},
 		})
-		return
 	}
 }

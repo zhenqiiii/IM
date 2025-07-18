@@ -21,7 +21,7 @@ import (
 // 用于存放客户端发送的消息内容，用户身份从上下文中获得
 type MessageBody struct {
 	Message string `json:"message"`
-	RoomID  string `json:"roomid"` //区分聊天室
+	RoomID  string `json:"room_id"` //区分聊天室
 }
 
 // websocket升级实例
@@ -74,7 +74,7 @@ func WebsocketMessage() gin.HandlerFunc {
 				log.Println("用户不属于该房间")
 				return
 			}
-			// TODO：保存消息
+			// 保存消息
 			err = sqldb.InsertMessageBasic(models.MessageBasic{
 				UserID: userInfo.UserID, // userclaims获取
 				RoomID: msg.RoomID,      // 消息体

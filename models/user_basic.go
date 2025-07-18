@@ -6,7 +6,7 @@ import (
 
 // 用户结构体
 type UserBasic struct {
-	UserID    string    `json:"userid" gorm:"primaryKey"`
+	UserID    string    `json:"user_id" gorm:"primaryKey"`
 	Account   string    `json:"account"`
 	Password  string    `json:"password"`
 	Nickname  string    `json:"nickname"`
