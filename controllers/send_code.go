@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 
+	"github.com/zhenqiiii/IM-GO/gorm/redisdb"
 	"github.com/zhenqiiii/IM-GO/gorm/sqldb"
 	"github.com/zhenqiiii/IM-GO/pkg/verification"
 
@@ -10,7 +12,7 @@ import (
 	"github.com/zhenqiiii/IM-GO/cont"
 )
 
-// 这里应该不是叫send_code,此处的逻辑应该是注册的逻辑
+// 此处的逻辑属于注册流程中的一部分（验证码发送）
 // 验证码发送处理函数:
 // 场景：点击注册按钮后发送POST请求
 // 接收参数：email
@@ -43,7 +45,7 @@ func Send_Code() gin.HandlerFunc {
 			return
 		}
 
-		// 参数处理通过，发送验证码邮件
+		// 参数处理通过，发送验证邮件
 		code := verification.GenCode()
 		err = verification.SendCode(email, code)
 		if err != nil {
@@ -53,6 +55,18 @@ func Send_Code() gin.HandlerFunc {
 			})
 			return
 		}
+
+		// 存储验证码用于比对(使用邮箱作为key)
+		err = redisdb.Set(email, code)
+		if err != nil {
+			log.Println("验证码存储失败：" + err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"code": cont.INTERNAL_ERROR,
+				"msg":  "系统出错：" + err.Error(),
+			})
+			return
+		}
+		// 响应
 		c.JSON(http.StatusOK, gin.H{
 			"code": cont.SUCCESS,
 			"msg":  "验证码已发送!",

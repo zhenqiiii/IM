@@ -93,7 +93,7 @@ func WebsocketMessage() gin.HandlerFunc {
 			}
 			// 用户列表获取成功，遍历用户列表发送消息
 			// 这里通过判断连接池中是否有对应用户来实现将消息只发送给在线用户
-			// 离线用户通过消息历史来查看离线时的消息
+			// 离线用户通过获取消息列表来查看离线时聊天室已发送的消息
 			for _, user := range users {
 				if cc, online := conns[user.UserID]; online {
 					// err = cc.WriteMessage(websocket.TextMessage, []byte(msg.Message))

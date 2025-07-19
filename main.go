@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/zhenqiiii/IM-GO/gorm/redisdb"
 	"github.com/zhenqiiii/IM-GO/gorm/sqldb"
 	"github.com/zhenqiiii/IM-GO/router"
 	"github.com/zhenqiiii/IM-GO/utils"
@@ -17,6 +18,8 @@ func main() {
 	utils.InitConfig()
 	// 初始化sql
 	sqldb.Init_SQL()
+	// redis
+	redisdb.InitRedis()
 
 	// 创建Router
 	r := router.SetupRouter()

@@ -13,7 +13,9 @@ func SetupRouter() *gin.Engine {
 
 	// login
 	r.POST("/login", controllers.Login())
-	r.GET("/index", controllers.GetIndex())
+	// r.GET("/index", controllers.GetIndex())
+	//用户注册
+	r.POST("/register", controllers.Register())
 	// 注册时验证码发送
 	r.POST("/verify", controllers.Send_Code())
 
