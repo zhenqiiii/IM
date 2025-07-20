@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/zhenqiiii/IM-GO/gorm/redisdb"
-	"github.com/zhenqiiii/IM-GO/gorm/sqldb"
+	"github.com/zhenqiiii/IM-GO/dao/redisdb"
+	"github.com/zhenqiiii/IM-GO/dao/sqldb"
 	"github.com/zhenqiiii/IM-GO/pkg/verification"
 
 	"github.com/gin-gonic/gin"

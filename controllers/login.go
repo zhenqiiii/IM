@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/zhenqiiii/IM-GO/cont"
-	"github.com/zhenqiiii/IM-GO/gorm/sqldb"
+	"github.com/zhenqiiii/IM-GO/dao/sqldb"
 	"github.com/zhenqiiii/IM-GO/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
