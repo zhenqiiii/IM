@@ -25,7 +25,7 @@ func SetupRouter() *gin.Engine {
 		// 用户详情（自己的信息）
 		userBlock.GET("/detail", controllers.UserDetail())
 		// 查看指定用户的个人信息
-		userBlock.GET("/query", controllers.Query())
+		userBlock.GET("/query", controllers.UserQuery())
 		// 发送接收消息
 		userBlock.GET("/msg", controllers.WebsocketMessage())
 		// 拉取聊天室聊天记录列表(进入某房间时)

@@ -8,7 +8,7 @@ import (
 )
 
 // token有效时长
-const TokenExpireDuration = time.Hour * 24
+const TokenExpireDuration = time.Hour * 24 * 7
 
 // Secret: 用于加盐的字符串，密钥
 var Secret = []byte("你拿什么抗争")

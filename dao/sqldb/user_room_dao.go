@@ -36,3 +36,38 @@ func GetUsersByRoomID(roomid string) (users []models.UserRoom, err error) {
 	}
 	return users, nil
 }
+
+// 查询二者是否为好友：
+// 接收参数：id1, id2
+// 查询二者之一的UserRoom表中RoomType为1的记录，取room_id字段,得到列表
+// 然后用列表去匹配id2的UserRoom表记录
+func JudgeTwoUsersAreFriends(id1, id2 string) (error, bool) {
+	// 首先查询id1的所有Roomtype为1（私聊）的UserRoom记录
+	// 得到的结果实际上就是该用户的所有私聊房间（即私聊好友列表）
+	friendList := make([]models.UserRoom, 0)
+	result := db.Where("user_id = ? AND room_type = 1", id1).Find(&friendList)
+	if result.Error != nil {
+		log.Println("获取私聊列表失败" + result.Error.Error())
+		return result.Error, false
+	}
+	// 取出RoomID
+	// TODO:优化此处的执行逻辑
+	roomIdList := make([]string, 0)
+	for _, id := range friendList {
+		roomIdList = append(roomIdList, id.RoomID)
+	}
+	// 拿到id1的私聊列表后,查询id2的UserRoom表中是否存在一条记录,
+	// 该记录满足条件:room_id in roomIdList
+	result = db.Where("user_id = ? AND room_id IN ?", id2, roomIdList).Limit(1).Find(&models.UserRoom{})
+	if result.Error != nil {
+		log.Println("查询是否匹配失败" + result.Error.Error())
+		return result.Error, false
+	}
+	// 查询成功
+	// 不是好友关系
+	if result.RowsAffected == 0 {
+		return nil, false
+	}
+	// 是
+	return nil, true
+}
