@@ -30,6 +30,10 @@ func SetupRouter() *gin.Engine {
 		userBlock.GET("/msg", controllers.WebsocketMessage())
 		// 拉取聊天室聊天记录列表(进入某房间时)
 		userBlock.GET("/chatlist", controllers.ChatList())
+
+		// 添加好友
+		// 博主写的比较简单，但个人觉得一个完善的添加好友功能应该涉及发送请求，同意等过程
+		userBlock.POST("/add", controllers.UserAdd())
 	}
 
 	return r

@@ -71,3 +71,13 @@ func JudgeTwoUsersAreFriends(id1, id2 string) (error, bool) {
 	// 是
 	return nil, true
 }
+
+// 插入UserRoom关系
+func InsertUserRoom(userRoom *models.UserRoom) error {
+	result := db.Create(&userRoom)
+	if result.Error != nil {
+		log.Println("插入UserRoom用户房间关系数据失败：" + result.Error.Error())
+		return result.Error
+	}
+	return nil
+}

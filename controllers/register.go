@@ -9,7 +9,7 @@ import (
 	"github.com/zhenqiiii/IM-GO/dao/redisdb"
 	"github.com/zhenqiiii/IM-GO/dao/sqldb"
 	"github.com/zhenqiiii/IM-GO/models"
-	"github.com/zhenqiiii/IM-GO/pkg/snowflakeID"
+	"github.com/zhenqiiii/IM-GO/pkg/genid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -78,7 +78,7 @@ func Register() gin.HandlerFunc {
 		// 预处理: 1. 使用bcrypt加密passoword然后存入 2. 使用雪花算法生成随机UserID
 		hashed, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		user := models.UserBasic{
-			UserID:   snowflakeID.GenID(),
+			UserID:   genid.GenID(),
 			Account:  account,
 			Password: string(hashed),
 			Email:    email,

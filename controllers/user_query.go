@@ -39,7 +39,7 @@ func UserQuery() gin.HandlerFunc {
 			log.Println("查询失败：" + err.Error())
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.INTERNAL_ERROR,
-				"msg":  "系统异常：" + err.Error(),
+				"msg":  "查询异常：" + err.Error(),
 			})
 			return
 		}
@@ -50,7 +50,7 @@ func UserQuery() gin.HandlerFunc {
 			log.Println("查询好友关系失败:" + err.Error())
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.INTERNAL_ERROR,
-				"msg":  "系统异常:" + err.Error(),
+				"msg":  "查询异常:" + err.Error(),
 			})
 		}
 		result := userInfo{
