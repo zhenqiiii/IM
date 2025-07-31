@@ -13,7 +13,7 @@ import (
 func AuthCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 获取token
-		token := c.GetHeader("token")
+		token := c.GetHeader("Authorization")
 
 		// 解析token
 		claims, err := jwt.ParseToken(token)

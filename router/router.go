@@ -1,7 +1,6 @@
 package router
 
 import (
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/zhenqiiii/IM-GO/controllers"
 	"github.com/zhenqiiii/IM-GO/middlewares"
@@ -11,8 +10,13 @@ import (
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
-	// 配置CORS，放行所有源
-	r.Use(cors.Default())
+	// // 把 ./frontend 目录下的所有文件托管到/static路径
+	r.Static("/static", "./frontend")
+
+	// // 若前后端在本机不同端口运行，配置CORS，放行所有源
+	// r.Use(cors.Default())
+
+	// 个性化配置CORS
 	// r.Use(cors.New(cors.Config{
 	// 	AllowOrigins:     []string{"http://localhost:3000", "null"}, // 允许前端地址。允许 file:// 的 null 来源，因为可能会直接使用浏览器打开html
 	// 	AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
