@@ -46,7 +46,7 @@ func Login() gin.HandlerFunc {
 			log.Println("用户密码输入错误：" + err.Error())
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.WRONG_PARAMS,
-				"msg":  "密码错误：" + err.Error(),
+				"msg":  "密码错误",
 			})
 			return
 		}

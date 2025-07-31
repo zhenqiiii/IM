@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>页面未找到 - IM即时通讯系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden p-8 text-center">
+        <div class="mb-6">
+            <svg class="mx-auto h-24 w-24 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">404</h1>
+        <h2 class="text-xl font-semibold text-gray-700 mb-6">页面未找到</h2>
+        <p class="text-gray-600 mb-8">您访问的页面不存在或已被移除。</p>
+        <div class="flex justify-center space-x-4">
+            <a href="login.html" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition duration-200">返回登录</a>
+            <a href="chat.html" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition duration-200">返回聊天</a>
+        </div>
+    </div>
+
+    <script>
+        // 检查是否已登录，决定默认跳转按钮
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const loginBtn = document.querySelector('a[href="login.html"]');
+            const chatBtn = document.querySelector('a[href="chat.html"]');
+            
+            if (token) {
+                // 已登录，突出显示"返回聊天"按钮
+                loginBtn.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
+                loginBtn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                
+                chatBtn.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                chatBtn.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
+            }
+        });
+    </script>
+</body>
+</html>

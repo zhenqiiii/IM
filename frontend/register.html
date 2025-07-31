@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - IM即时通讯系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">注册账号</h1>
+        
+        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <span id="error-text"></span>
+        </div>
+        
+        <div id="success-message" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+            <span id="success-text"></span>
+        </div>
+        
+        <form id="register-form" class="space-y-4">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">邮箱</label>
+                <div class="mt-1 flex rounded-md shadow-sm">
+                    <input type="email" id="email" name="email" required class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <button type="button" id="send-code-btn" class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        发送验证码
+                    </button>
+                </div>
+            </div>
+            
+            <div>
+                <label for="code" class="block text-sm font-medium text-gray-700">验证码</label>
+                <input type="text" id="code" name="code" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            
+            <div>
+                <label for="account" class="block text-sm font-medium text-gray-700">账号</label>
+                <input type="text" id="account" name="account" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">密码</label>
+                <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    注册
+                </button>
+            </div>
+        </form>
+        
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600">
+                已有账号？ 
+                <a href="login.html" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    立即登录
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('register-form');
+            const sendCodeBtn = document.getElementById('send-code-btn');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const successMessage = document.getElementById('success-message');
+            const successText = document.getElementById('success-text');
+            
+            // 发送验证码
+            sendCodeBtn.addEventListener('click', async function() {
+                const email = document.getElementById('email').value;
+                
+                if (!email) {
+                    errorText.textContent = '请输入邮箱';
+                    errorMessage.classList.remove('hidden');
+                    successMessage.classList.add('hidden');
+                    return;
+                }
+                
+                // 禁用按钮，防止重复点击
+                sendCodeBtn.disabled = true;
+                sendCodeBtn.textContent = '发送中...';
+                
+                // 表单数据
+                const formData = new FormData();
+                formData.append('email', email);
+                
+                try {
+                    const response = await fetch('http://localhost:8081/verify', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.code === 111) { // 成功状态码
+                        // 显示成功信息
+                        successText.textContent = '验证码已发送到您的邮箱';
+                        successMessage.classList.remove('hidden');
+                        errorMessage.classList.add('hidden');
+                        
+                        // 倒计时60秒
+                        let countdown = 60;
+                        const timer = setInterval(() => {
+                            countdown--;
+                            sendCodeBtn.textContent = `${countdown}秒后重试`;
+                            
+                            if (countdown <= 0) {
+                                clearInterval(timer);
+                                sendCodeBtn.disabled = false;
+                                sendCodeBtn.textContent = '发送验证码';
+                            }
+                        }, 1000);
+                    } else {
+                        // 显示错误信息
+                        errorText.textContent = data.msg || '验证码发送失败';
+                        errorMessage.classList.remove('hidden');
+                        successMessage.classList.add('hidden');
+                        sendCodeBtn.disabled = false;
+                        sendCodeBtn.textContent = '发送验证码';
+                    }
+                } catch (error) {
+                    console.error('验证码请求出错:', error);
+                    errorText.textContent = '网络错误，请稍后重试';
+                    errorMessage.classList.remove('hidden');
+                    successMessage.classList.add('hidden');
+                    sendCodeBtn.disabled = false;
+                    sendCodeBtn.textContent = '发送验证码';
+                }
+            });
+            
+            // 注册表单提交
+            registerForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const code = document.getElementById('code').value;
+                const account = document.getElementById('account').value;
+                const password = document.getElementById('password').value;
+                
+                // 表单数据
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append('code', code);
+                formData.append('account', account);
+                formData.append('password', password);
+                
+                try {
+                    const response = await fetch('http://localhost:8081/register', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.code === 111) { // 成功状态码
+                        // 显示成功信息
+                        successText.textContent = '注册成功，即将跳转到登录页面';
+                        successMessage.classList.remove('hidden');
+                        errorMessage.classList.add('hidden');
+                        
+                        // 3秒后跳转到登录页面
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 3000);
+                    } else {
+                        // 显示错误信息
+                        errorText.textContent = data.msg || '注册失败';
+                        errorMessage.classList.remove('hidden');
+                        successMessage.classList.add('hidden');
+                    }
+                } catch (error) {
+                    console.error('注册请求出错:', error);
+                    errorText.textContent = '网络错误，请稍后重试';
+                    errorMessage.classList.remove('hidden');
+                    successMessage.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

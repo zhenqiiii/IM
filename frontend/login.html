@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - IM即时通讯系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">IM即时通讯系统</h1>
+        
+        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <span id="error-text"></span>
+        </div>
+        
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label for="account" class="block text-sm font-medium text-gray-700">账号</label>
+                <input type="text" id="account" name="account" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">密码</label>
+                <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    登录
+                </button>
+            </div>
+        </form>
+        
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600">
+                还没有账号？ 
+                <a href="register.html" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    立即注册
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查是否已登录
+            const token = localStorage.getItem('token');
+            if (token) {
+                // 已登录，跳转到聊天页面
+                window.location.href = 'chat.html';
+            }
+            
+            // 登录表单提交
+            const loginForm = document.getElementById('login-form');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const account = document.getElementById('account').value;
+                const password = document.getElementById('password').value;
+                
+                // 表单数据
+                const formData = new FormData();
+                formData.append('account', account);
+                formData.append('password', password);
+                
+                try {
+                    const response = await fetch('http://localhost:8081/login', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.code === 111) { // 成功状态码
+                        // 保存token到本地存储
+                        localStorage.setItem('token', data.data.token);
+                        // 跳转到聊天页面
+                        window.location.href = 'chat.html';
+                    } else {
+                        // 显示错误信息
+                        errorText.textContent = data.msg || '登录失败';
+                        errorMessage.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error('登录请求出错:', error);
+                    errorText.textContent = '网络错误，请稍后重试';
+                    errorMessage.classList.remove('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
