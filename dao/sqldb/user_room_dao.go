@@ -47,7 +47,7 @@ func JudgeTwoUsersAreFriends(id1, id2 string) (error, bool) {
 	friendList := make([]models.UserRoom, 0)
 	result := db.Where("user_id = ? AND room_type = 1", id1).Find(&friendList)
 	if result.Error != nil {
-		log.Println("获取私聊列表失败" + result.Error.Error())
+		log.Println("获取私聊房间列表失败" + result.Error.Error())
 		return result.Error, false
 	}
 	// 取出RoomID
@@ -72,11 +72,49 @@ func JudgeTwoUsersAreFriends(id1, id2 string) (error, bool) {
 	return nil, true
 }
 
+// 查找二者的私聊房间ID
+func GetTwoUsersRoom(id1, id2 string) (string, error) {
+	// 首先查询id1的所有Roomtype为1（私聊）的UserRoom记录
+	// 得到的结果实际上就是该用户的所有私聊房间（即私聊好友列表）
+	friendList := make([]models.UserRoom, 0)
+	result := db.Where("user_id = ? AND room_type = 1", id1).Find(&friendList)
+	if result.Error != nil {
+		log.Println("获取私聊房间列表失败" + result.Error.Error())
+		return "", result.Error
+	}
+	// 取出RoomID
+	// TODO:优化此处的执行逻辑
+	roomIdList := make([]string, 0)
+	for _, id := range friendList {
+		roomIdList = append(roomIdList, id.RoomID)
+	}
+	// 拿到id1的私聊列表后,查询id2的UserRoom表中是否存在一条记录,
+	// 该记录满足条件:room_id in roomIdList
+	userRoom := models.UserRoom{}
+	result = db.Where("user_id = ? AND room_id IN ?", id2, roomIdList).Limit(1).First(&userRoom)
+	if result.Error != nil {
+		log.Println("查询房间失败" + result.Error.Error())
+		return "", result.Error
+	}
+	// 查询成功,返回RoomID
+	return userRoom.RoomID, nil
+}
+
 // 插入UserRoom关系
 func InsertUserRoom(userRoom *models.UserRoom) error {
 	result := db.Create(&userRoom)
 	if result.Error != nil {
 		log.Println("插入UserRoom用户房间关系数据失败：" + result.Error.Error())
+		return result.Error
+	}
+	return nil
+}
+
+// 删除私聊UserRoom关系
+func DeleteUserRoom(roomid string) error {
+	result := db.Where("room_id = ?", roomid).Delete(&models.UserRoom{})
+	if result.Error != nil {
+		log.Println("删除UserRoom用户房间关系数据失败：" + result.Error.Error())
 		return result.Error
 	}
 	return nil

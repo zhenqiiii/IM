@@ -34,6 +34,10 @@ func SetupRouter() *gin.Engine {
 		// 添加好友
 		// 博主写的比较简单，但个人觉得一个完善的添加好友功能应该涉及发送请求，同意等过程
 		userBlock.POST("/add", controllers.UserAdd())
+
+		// 删除好友
+		userBlock.DELETE("/delete", controllers.UserDelete())
+
 	}
 
 	return r
