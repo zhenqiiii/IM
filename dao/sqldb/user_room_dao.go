@@ -61,7 +61,8 @@ func GetAnotherUserID(ur *models.UserRoom) (string, error) {
 func JudgeTwoUsersAreFriends(id1, id2 string) (error, bool) {
 	// 首先查询id1的所有Roomtype为1（私聊）的UserRoom记录
 	// 得到的结果实际上就是该用户的所有私聊房间（即私聊好友列表）
-	friendList := make([]models.UserRoom, 0)
+	// friendList := make([]models.UserRoom, 0)
+	var friendList []models.UserRoom
 	result := db.Where("user_id = ? AND room_type = 1", id1).Find(&friendList)
 	if result.Error != nil {
 		log.Println("获取私聊房间列表失败" + result.Error.Error())

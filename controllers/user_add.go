@@ -33,7 +33,7 @@ func UserAdd() gin.HandlerFunc {
 			log.Println("查询失败：" + err.Error())
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.INTERNAL_ERROR,
-				"msg":  "查询异常：" + err.Error(),
+				"msg":  "系统异常：" + err.Error(),
 			})
 			return
 		}
@@ -46,7 +46,7 @@ func UserAdd() gin.HandlerFunc {
 			log.Println("查询好友关系失败:" + err.Error())
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.INTERNAL_ERROR,
-				"msg":  "查询异常:" + err.Error(),
+				"msg":  "系统异常:" + err.Error(),
 			})
 			return
 		}
@@ -63,13 +63,13 @@ func UserAdd() gin.HandlerFunc {
 		// 1. RoomBasic
 		room := models.RoomBasic{
 			RoomID:  genid.GenRoomID(),
-			Name:    " 用户单聊房间",
+			Name:    " 私聊",
 			Info:    " 用户A(owner):" + uClaims.UserID + "\n用户B:" + user.UserID,
 			OwnerID: uClaims.UserID,
 		}
 		err = sqldb.InsertRoomBasic(room)
 		if err != nil {
-			log.Println("创建用户单聊房间失败：" + err.Error())
+			log.Println("创建私聊失败：" + err.Error())
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.INTERNAL_ERROR,
 				"msg":  "系统异常：" + err.Error(),
@@ -93,7 +93,7 @@ func UserAdd() gin.HandlerFunc {
 		}
 		// 3. UserRoom
 		BuserRoom := &models.UserRoom{
-			UserID:   uClaims.UserID,
+			UserID:   user.UserID,
 			RoomID:   room.RoomID,
 			RoomType: 1,
 		}
