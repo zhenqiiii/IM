@@ -14,6 +14,9 @@ func AuthCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 获取token
 		token := c.GetHeader("Authorization")
+		if token == "" {
+			token = c.Query("token")
+		}
 
 		// 解析token
 		claims, err := jwt.ParseToken(token)

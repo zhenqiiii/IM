@@ -39,6 +39,7 @@ func UserAdd() gin.HandlerFunc {
 		}
 
 		// 判断用户和被添加用户是否已经是好友关系
+		// TODO：这里应该有bug
 		uClaims := c.MustGet("user_claims").(*jwt.UserClaims)
 		err, friend := sqldb.JudgeTwoUsersAreFriends(uClaims.UserID, user.UserID)
 		if err != nil {
