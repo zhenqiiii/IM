@@ -45,6 +45,8 @@ func SetupRouter() *gin.Engine {
 		// 发送接收消息
 		userBlock.GET("/msg", controllers.WebsocketMessage())
 		// 拉取聊天室聊天记录列表(进入某房间时)
+		userBlock.GET("/history", controllers.MsgHistory())
+		// 获取联系人列表
 		userBlock.GET("/chatlist", controllers.ChatList())
 
 		// 添加好友

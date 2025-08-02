@@ -32,7 +32,7 @@ func Login() gin.HandlerFunc {
 			log.Println(err)
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.NOT_FOUND,
-				"msg":  "查询失败：" + err.Error(),
+				"msg":  "用户不存在：" + err.Error(),
 			})
 			return
 		}

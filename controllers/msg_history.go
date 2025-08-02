@@ -13,7 +13,7 @@ import (
 
 // 拉取聊天记录列表函数
 // 接收参数：RoomID
-func ChatList() gin.HandlerFunc {
+func MsgHistory() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 获取房间号：query参数
 		roomID := c.Query("room_id")

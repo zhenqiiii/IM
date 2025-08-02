@@ -278,7 +278,7 @@
             // 加载聊天记录
             async function loadChatMessages(roomId, page = 1, pageSize = 20) {
                 try {
-                    const response = await fetch(`http://localhost:8081/user/chatlist?room_id=${roomId}&page_index=${page}&page_size=${pageSize}`, {
+                    const response = await fetch(`http://localhost:8081/user/history?room_id=${roomId}&page_index=${page}&page_size=${pageSize}`, {
                         method: 'GET',
                         headers: {
                             'Authorization': token

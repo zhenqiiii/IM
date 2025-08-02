@@ -25,3 +25,13 @@ func DeleteRoomBasic(roomid string) error {
 	}
 	return nil
 }
+
+// 通过RoomID获取RoomBasic
+func GetRoomBasicByRoomID(id string) (room *models.RoomBasic, err error) {
+	result := db.Where("room_id = ?", id).Limit(1).Find(&room)
+	if result.Error != nil {
+		log.Println("[DB]GetRoomBasicByRoomID:" + result.Error.Error())
+		return nil, result.Error
+	}
+	return room, nil
+}

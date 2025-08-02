@@ -1,6 +1,7 @@
 package sqldb
 
 import (
+	"errors"
 	"log"
 
 	"github.com/zhenqiiii/IM-GO/models"
@@ -35,6 +36,22 @@ func GetUsersByRoomID(roomid string) (users []models.UserRoom, err error) {
 		return nil, result.Error
 	}
 	return users, nil
+}
+
+// 根据A用户的UserRoom查询私聊房间中的B用户id
+func GetAnotherUserID(ur *models.UserRoom) (string, error) {
+	users, err := GetUsersByRoomID(ur.RoomID)
+	if err != nil {
+		return "", err
+	}
+	for _, user := range users {
+		if user.UserID != ur.UserID {
+			return user.UserID, nil
+		}
+	}
+	// users中未找到另一用户
+	log.Println("[DB]GetAnotherUser error")
+	return "", errors.New("[DB]GetAnotherUser")
 }
 
 // 查询二者是否为好友：
@@ -98,6 +115,17 @@ func GetTwoUsersRoom(id1, id2 string) (string, error) {
 	}
 	// 查询成功,返回RoomID
 	return userRoom.RoomID, nil
+}
+
+// 通过用户ID获取UserRoom列表:用于获取用户联系人列表
+func GetURListByUserID(id string) (URList []*models.UserRoom, err error) {
+	result := db.Where("user_id = ?", id).Find(&URList)
+	if result.Error != nil {
+		log.Println("[DB]GetURListByUserID：" + result.Error.Error())
+		return URList, result.Error
+	}
+	return URList, nil
+
 }
 
 // 插入UserRoom关系
