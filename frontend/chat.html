@@ -72,12 +72,49 @@
             
             <!-- 聊天输入区域 -->
             <div id="chat-input-area" class="p-4 border-t border-gray-200 bg-white hidden">
-                <form id="message-form" class="flex items-center">
-                    <input type="text" id="message-input" placeholder="输入消息..." class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                    <button type="submit" class="px-4 py-2 border border-transparent rounded-r-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        发送
-                    </button>
-                </form>
+                <!-- 表情选择器 -->
+                <div id="emoji-picker" class="hidden absolute bottom-20 left-4 w-80 p-4 border border-gray-200 rounded-lg bg-white shadow-lg max-h-48 overflow-y-auto z-10">
+                    <div class="grid grid-cols-8 gap-2">
+                        <!-- 表情将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 文件选择器 -->
+                <input type="file" id="file-input" class="hidden" accept="*/*">
+                <input type="file" id="image-input" class="hidden" accept="image/*">
+                
+                <div class="relative h-20">
+                    <!-- 左侧功能按钮 -->
+                    <div class="absolute left-0 top-0 flex flex-col justify-center h-full space-y-1">
+                        <button type="button" id="emoji-btn" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-indigo-500 hover:bg-gray-100 rounded-lg transition-colors">
+                            😊
+                        </button>
+                        <button type="button" id="image-btn" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-indigo-500 hover:bg-gray-100 rounded-lg transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </button>
+                        <button type="button" id="file-btn" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-indigo-500 hover:bg-gray-100 rounded-lg transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- 主输入区域 -->
+                    <form id="message-form" class="h-full">
+                        <div class="ml-12 mr-16 h-full relative">
+                            <textarea id="message-input" placeholder="输入消息..." class="w-full h-full resize-none border-none outline-none bg-gray-50 rounded-lg px-4 py-3 text-sm" rows="3"></textarea>
+                        </div>
+                        
+                        <!-- 发送按钮 -->
+                        <button type="submit" class="absolute bottom-2 right-2 w-12 h-8 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center justify-center transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -178,6 +215,35 @@
             const deleteFriendBtn = document.getElementById('delete-friend-btn');
             const searchInput = document.getElementById('search-input');
             const searchBtn = document.getElementById('search-btn');
+            const emojiBtn = document.getElementById('emoji-btn');
+            const emojiPicker = document.getElementById('emoji-picker');
+            const imageBtn = document.getElementById('image-btn');
+            const fileBtn = document.getElementById('file-btn');
+            const imageInput = document.getElementById('image-input');
+            const fileInput = document.getElementById('file-input');
+            
+            // 表情数据
+            const emojis = [
+                '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣',
+                '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰',
+                '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜',
+                '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏',
+                '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣',
+                '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠',
+                '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨',
+                '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥',
+                '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧',
+                '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐',
+                '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑',
+                '🤠', '😈', '👿', '👹', '👺', '🤡', '💩', '👻',
+                '💀', '☠️', '👽', '👾', '🤖', '🎃', '😺', '😸',
+                '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '❤️',
+                '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎',
+                '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘',
+                '💝', '💟', '👍', '👎', '👌', '🤏', '✌️', '🤞',
+                '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇',
+                '☝️', '👋', '🤚', '🖐️', '✋', '🖖', '👏', '🙌'
+            ];
             
             // 获取当前用户信息
             async function fetchCurrentUser() {
@@ -240,6 +306,7 @@
                                 room_id: contact.room_id,
                                 type: contact.type, // 1私聊 2群聊
                                 last_message: '',
+                                last_message_type: 'text', // 最新消息类型
                                 avatar: 'https://avatars.githubusercontent.com/u/148515933?s=400&u=7cbff7c77a33416cabfe463fff24495157026760&v=4', // 默认头像
                                 has_new_message: false, // 是否有新消息
                                 new_message_count: 0 // 新消息数量
@@ -334,8 +401,35 @@
                 // 查找对应的好友
                 const friendIndex = friends.findIndex(f => f.room_id === message.room_id);
                 if (friendIndex !== -1) {
+                    // 根据消息类型设置显示内容
+                    let displayMessage = '';
+                    const messageType = message.type || 'text';
+                    
+                    switch (messageType) {
+                        case 'emoji':
+                            displayMessage = message.data || message.message;
+                            break;
+                        case 'image':
+                            displayMessage = '[图片]';
+                            break;
+                        case 'file':
+                            displayMessage = '[文件]';
+                            break;
+                        case 'video':
+                            displayMessage = '[视频]';
+                            break;
+                        case 'speech':
+                            displayMessage = '[语音]';
+                            break;
+                        case 'text':
+                        default:
+                            displayMessage = message.data || message.message;
+                            break;
+                    }
+                    
                     // 更新最新消息
-                    friends[friendIndex].last_message = message.data || message.message;
+                    friends[friendIndex].last_message = displayMessage;
+                    friends[friendIndex].last_message_type = messageType;
                     
                     // 如果不是当前聊天室的消息，标记为有新消息
                     if (message.room_id !== currentRoomId) {
@@ -541,14 +635,59 @@
                 // 获取用户昵称
                 const userName = isCurrentUser ? currentUser.nickname : (currentChatUser?.nickname || '用户');
                 
+                // 根据消息类型渲染不同的内容
+                let messageContent = '';
+                const messageType = message.type || 'text'; // 默认为文本类型
+                
+                switch (messageType) {
+                    case 'emoji':
+                        messageContent = `<span class="text-4xl">${message.data}</span>`;
+                        break;
+                    case 'image':
+                        messageContent = `
+                            <div class="max-w-48">
+                                <img src="${message.data}" alt="${message.file_name || '图片'}" class="rounded-lg max-w-full h-auto cursor-pointer" onclick="window.open('${message.data}', '_blank')">
+                                <p class="text-xs text-gray-500 mt-1">${message.file_name || '图片'}</p>
+                            </div>
+                        `;
+                        break;
+                    case 'file':
+                        const fileSize = message.file_size ? (message.file_size / 1024 / 1024).toFixed(2) + 'MB' : '未知大小';
+                        messageContent = `
+                            <div class="flex items-center space-x-3 p-3 border border-gray-300 rounded-lg bg-white">
+                                <div class="flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate">${message.file_name || '文件'}</p>
+                                    <p class="text-xs text-gray-500">${fileSize}</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <a href="${message.data}" download="${message.file_name}" class="text-indigo-600 hover:text-indigo-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'text':
+                    default:
+                        messageContent = `<p>${message.data || message.message}</p>`;
+                        break;
+                }
+                
                 messageElement.innerHTML = `
-                    <div class="${isCurrentUser ? 'order-1' : 'order-2'} flex-shrink-0">
+                    <div class="${isCurrentUser ? 'order-2' : 'order-1'} flex-shrink-0">
                         <img src="${isCurrentUser ? (currentUser.avatar || 'https://via.placeholder.com/32') : (currentChatUser?.avatar || 'https://via.placeholder.com/32')}" alt="头像" class="w-8 h-8 rounded-full">
                     </div>
-                    <div class="${isCurrentUser ? 'order-2' : 'order-1'} max-w-xs mx-2">
+                    <div class="${isCurrentUser ? 'order-1' : 'order-2'} max-w-xs mx-2">
                         <div class="${isCurrentUser ? 'text-right' : 'text-left'} text-xs text-gray-600 mb-1">${userName}</div>
-                        <div class="${isCurrentUser ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-800'} rounded-lg px-4 py-2 shadow">
-                            <p>${message.data || message.message}</p>
+                        <div class="${isCurrentUser ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-800'} rounded-lg ${messageType === 'emoji' ? 'px-2 py-1' : messageType === 'image' || messageType === 'file' ? 'p-2' : 'px-4 py-2'} shadow">
+                            ${messageContent}
                         </div>
                         <div class="text-xs text-gray-500 ${isCurrentUser ? 'text-right' : 'text-left'} mt-1">
                             <span>${createdTime}</span>
@@ -760,6 +899,7 @@
                     user_id: currentUser.user_id,
                     room_id: currentRoomId,
                     data: message,
+                    type: 'text', // 设置消息类型为文本
                     created_at: now.toISOString() // 添加创建时间
                 };
                 
@@ -972,7 +1112,10 @@
                                     <span class="ml-2" title="${friend.type === 1 ? '私聊' : '群聊'}">${typeIcon}</span>
                                     ${hasNewMessage ? '<span class="ml-2 w-2 h-2 bg-red-500 rounded-full" title="有新消息"></span>' : ''}
                                 </div>
-                                <p class="text-sm ${hasNewMessage ? 'text-blue-600 font-medium' : 'text-gray-500'} truncate">${friend.last_message || ''}</p>
+                                <div class="flex items-center text-sm ${hasNewMessage ? 'text-blue-600 font-medium' : 'text-gray-500'} truncate">
+                                    ${getMessageTypeIcon(friend.last_message_type || 'text')}
+                                    <span class="ml-1">${friend.last_message || ''}</span>
+                                </div>
                             </div>
                         </div>
                         ${newMessageBadge}
@@ -987,7 +1130,234 @@
                 });
             }
             
+            // 获取消息类型图标
+            function getMessageTypeIcon(messageType) {
+                switch (messageType) {
+                    case 'emoji':
+                        return '<span class="text-yellow-500">😊</span>';
+                    case 'image':
+                        return '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>';
+                    case 'file':
+                        return '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>';
+                    case 'video':
+                        return '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>';
+                    case 'speech':
+                        return '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>';
+                    case 'text':
+                    default:
+                        return '';
+                }
+            }
+            
+            // 初始化表情选择器
+            function initEmojiPicker() {
+                const emojiGrid = emojiPicker.querySelector('.grid');
+                emojiGrid.innerHTML = '';
+                
+                emojis.forEach(emoji => {
+                    const emojiBtn = document.createElement('button');
+                    emojiBtn.type = 'button';
+                    emojiBtn.className = 'p-2 text-2xl hover:bg-gray-200 rounded transition-colors duration-200';
+                    emojiBtn.textContent = emoji;
+                    emojiBtn.addEventListener('click', function() {
+                        // 发送表情消息
+                        sendEmojiMessage(emoji);
+                        // 隐藏表情选择器
+                        emojiPicker.classList.add('hidden');
+                    });
+                    emojiGrid.appendChild(emojiBtn);
+                });
+            }
+            
+            // 发送表情消息
+            function sendEmojiMessage(emoji) {
+                if (!currentRoomId) {
+                    alert('请先选择一个聊天');
+                    return;
+                }
+                
+                const now = new Date();
+                
+                // 检查是否需要添加日期分隔线
+                const lastDateElements = chatMessages.querySelectorAll('.date-separator');
+                const lastDateStr = lastDateElements.length > 0 ? 
+                    lastDateElements[lastDateElements.length - 1].textContent.trim() : null;
+                const todayStr = now.getFullYear() + '/' + 
+                                String(now.getMonth() + 1).padStart(2, '0') + '/' + 
+                                String(now.getDate()).padStart(2, '0');
+                
+                if (!lastDateStr || todayStr !== lastDateStr) {
+                    addDateSeparator(now);
+                }
+                
+                // 构建表情消息对象
+                const messageObj = {
+                    user_id: currentUser.user_id,
+                    room_id: currentRoomId,
+                    data: emoji,
+                    type: 'emoji', // 设置消息类型为表情
+                    created_at: now.toISOString()
+                };
+                
+                // 发送消息
+                socket.send(JSON.stringify(messageObj));
+                
+                // 添加消息到当前消息列表
+                currentRoomMessages.push(messageObj);
+            }
+            
+            // 发送图片消息
+            function sendImageMessage(file) {
+                if (!currentRoomId) {
+                    alert('请先选择一个聊天');
+                    return;
+                }
+                
+                // 创建文件读取器
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const now = new Date();
+                    
+                    // 检查是否需要添加日期分隔线
+                    const lastDateElements = chatMessages.querySelectorAll('.date-separator');
+                    const lastDateStr = lastDateElements.length > 0 ? 
+                        lastDateElements[lastDateElements.length - 1].textContent.trim() : null;
+                    const todayStr = now.getFullYear() + '/' + 
+                                    String(now.getMonth() + 1).padStart(2, '0') + '/' + 
+                                    String(now.getDate()).padStart(2, '0');
+                    
+                    if (!lastDateStr || todayStr !== lastDateStr) {
+                        addDateSeparator(now);
+                    }
+                    
+                    // 构建图片消息对象
+                    const messageObj = {
+                        user_id: currentUser.user_id,
+                        room_id: currentRoomId,
+                        data: e.target.result, // base64编码的图片数据
+                        type: 'image',
+                        file_name: file.name,
+                        file_size: file.size,
+                        created_at: now.toISOString()
+                    };
+                    
+                    // 发送消息
+                    socket.send(JSON.stringify(messageObj));
+                    
+                    // 添加消息到当前消息列表
+                    currentRoomMessages.push(messageObj);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            // 发送文件消息
+            function sendFileMessage(file) {
+                if (!currentRoomId) {
+                    alert('请先选择一个聊天');
+                    return;
+                }
+                
+                // 创建文件读取器
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const now = new Date();
+                    
+                    // 检查是否需要添加日期分隔线
+                    const lastDateElements = chatMessages.querySelectorAll('.date-separator');
+                    const lastDateStr = lastDateElements.length > 0 ? 
+                        lastDateElements[lastDateElements.length - 1].textContent.trim() : null;
+                    const todayStr = now.getFullYear() + '/' + 
+                                    String(now.getMonth() + 1).padStart(2, '0') + '/' + 
+                                    String(now.getDate()).padStart(2, '0');
+                    
+                    if (!lastDateStr || todayStr !== lastDateStr) {
+                        addDateSeparator(now);
+                    }
+                    
+                    // 构建文件消息对象
+                    const messageObj = {
+                        user_id: currentUser.user_id,
+                        room_id: currentRoomId,
+                        data: e.target.result, // base64编码的文件数据
+                        type: 'file',
+                        file_name: file.name,
+                        file_size: file.size,
+                        created_at: now.toISOString()
+                    };
+                    
+                    // 发送消息
+                    socket.send(JSON.stringify(messageObj));
+                    
+                    // 添加消息到当前消息列表
+                    currentRoomMessages.push(messageObj);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            // 表情按钮点击事件
+            emojiBtn.addEventListener('click', function() {
+                emojiPicker.classList.toggle('hidden');
+            });
+            
+            // 图片按钮点击事件
+            imageBtn.addEventListener('click', function() {
+                imageInput.click();
+            });
+            
+            // 文件按钮点击事件
+            fileBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // 图片文件选择事件
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // 检查文件大小（限制为5MB）
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('图片文件大小不能超过5MB');
+                        return;
+                    }
+                    sendImageMessage(file);
+                }
+                // 清空文件选择器
+                e.target.value = '';
+            });
+            
+            // 文件选择事件
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // 检查文件大小（限制为10MB）
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('文件大小不能超过10MB');
+                        return;
+                    }
+                    sendFileMessage(file);
+                }
+                // 清空文件选择器
+                e.target.value = '';
+            });
+            
+            // 回车键发送消息
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    messageForm.dispatchEvent(new Event('submit'));
+                }
+            });
+            
+            // 点击其他地方隐藏表情选择器
+            document.addEventListener('click', function(e) {
+                if (!emojiBtn.contains(e.target) && !emojiPicker.contains(e.target)) {
+                    emojiPicker.classList.add('hidden');
+                }
+            });
+            
             // 初始化
+            initEmojiPicker();
             fetchCurrentUser();
         });
     </script>
