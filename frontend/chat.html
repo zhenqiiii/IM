@@ -240,7 +240,9 @@
                                 room_id: contact.room_id,
                                 type: contact.type, // 1私聊 2群聊
                                 last_message: '',
-                                avatar: 'https://avatars.githubusercontent.com/u/148515933?s=400&u=7cbff7c77a33416cabfe463fff24495157026760&v=4' // 默认头像
+                                avatar: 'https://avatars.githubusercontent.com/u/148515933?s=400&u=7cbff7c77a33416cabfe463fff24495157026760&v=4', // 默认头像
+                                has_new_message: false, // 是否有新消息
+                                new_message_count: 0 // 新消息数量
                             };
                         });
                         
@@ -329,7 +331,21 @@
             
             // 更新好友列表中的最新消息
             function updateFriendLastMessage(message) {
-                // 实际项目中应该更新好友列表中的最新消息
+                // 查找对应的好友
+                const friendIndex = friends.findIndex(f => f.room_id === message.room_id);
+                if (friendIndex !== -1) {
+                    // 更新最新消息
+                    friends[friendIndex].last_message = message.data || message.message;
+                    
+                    // 如果不是当前聊天室的消息，标记为有新消息
+                    if (message.room_id !== currentRoomId) {
+                        friends[friendIndex].has_new_message = true;
+                        friends[friendIndex].new_message_count = (friends[friendIndex].new_message_count || 0) + 1;
+                    }
+                    
+                    // 重新渲染好友列表
+                    renderFriendList(friends);
+                }
             }
             
             // 添加日期分隔线
@@ -573,6 +589,15 @@
                 
                 currentRoomId = roomId;
                 currentChatUser = contact;
+                
+                // 清除该好友的新消息提示
+                const friendIndex = friends.findIndex(f => f.room_id === roomId);
+                if (friendIndex !== -1) {
+                    friends[friendIndex].has_new_message = false;
+                    friends[friendIndex].new_message_count = 0;
+                    // 重新渲染好友列表以更新UI
+                    renderFriendList(friends);
+                }
                 
                 // 重置分页变量
                 currentPage = 1;
@@ -923,7 +948,9 @@
                 // 渲染好友列表
                 friendsList.forEach(friend => {
                     const friendElement = document.createElement('div');
-                    friendElement.className = 'p-2 hover:bg-gray-100 rounded-md cursor-pointer';
+                    // 如果有新消息，添加特殊样式
+                    const hasNewMessage = friend.has_new_message && friend.room_id !== currentRoomId;
+                    friendElement.className = `p-2 hover:bg-gray-100 rounded-md cursor-pointer relative ${hasNewMessage ? 'bg-blue-50 border-l-4 border-blue-500' : ''}`;
                     friendElement.dataset.roomId = friend.room_id;
                     friendElement.dataset.type = friend.type;
                     
@@ -932,17 +959,23 @@
                         '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>' : 
                         '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" /></svg>';
                     
+                    // 新消息提示标识
+                    const newMessageBadge = hasNewMessage && friend.new_message_count > 0 ? 
+                        `<span class="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">${friend.new_message_count > 99 ? '99+' : friend.new_message_count}</span>` : '';
+                    
                     friendElement.innerHTML = `
                         <div class="flex items-center">
                             <img src="${friend.avatar || 'https://via.placeholder.com/40'}" alt="头像" class="w-10 h-10 rounded-full mr-3">
                             <div class="flex-1">
                                 <div class="flex items-center">
-                                    <p class="font-medium">${friend.nickname}</p>
+                                    <p class="font-medium ${hasNewMessage ? 'text-blue-700' : ''}">${friend.nickname}</p>
                                     <span class="ml-2" title="${friend.type === 1 ? '私聊' : '群聊'}">${typeIcon}</span>
+                                    ${hasNewMessage ? '<span class="ml-2 w-2 h-2 bg-red-500 rounded-full" title="有新消息"></span>' : ''}
                                 </div>
-                                <p class="text-sm text-gray-500 truncate">${friend.last_message || ''}</p>
+                                <p class="text-sm ${hasNewMessage ? 'text-blue-600 font-medium' : 'text-gray-500'} truncate">${friend.last_message || ''}</p>
                             </div>
                         </div>
+                        ${newMessageBadge}
                     `;
                     
                     // 点击联系人打开聊天
