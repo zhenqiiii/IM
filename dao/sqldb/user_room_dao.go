@@ -30,7 +30,7 @@ func GetUserRoomByID(userid string, roomid string) (bool, error) {
 // 获取属于该房间的用户ID
 // 返回值：UserRoom结构体切片
 func GetUsersByRoomID(roomid string) (users []models.UserRoom, err error) {
-	result := db.Find(&users)
+	result := db.Where("room_id = ?", roomid).Find(&users)
 	if result.Error != nil {
 		log.Println("UserRoom查询失败：" + result.Error.Error())
 		return nil, result.Error
@@ -45,6 +45,7 @@ func GetAnotherUserID(ur *models.UserRoom) (string, error) {
 		return "", err
 	}
 	for _, user := range users {
+		// 返回另一人的UserID
 		if user.UserID != ur.UserID {
 			return user.UserID, nil
 		}

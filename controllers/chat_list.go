@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -39,6 +40,7 @@ func ChatList() gin.HandlerFunc {
 		// 对URList进行处理，获得contactList联系人列表
 		// TODO:如果其中有一个用户的信息获取出现错误，如何处理？
 		// 当前处理逻辑：出错后对该条数据另设内容，以表示错误情况，但依旧放在列表中
+		// Debug: 获取的用户Nickname为空
 		contactList := make([]*Contact, len(URList))
 		for cnt, ur := range URList {
 			contactList[cnt] = &Contact{} // 初始化slice
@@ -47,10 +49,6 @@ func ChatList() gin.HandlerFunc {
 				id, err := sqldb.GetAnotherUserID(ur)
 				if err != nil {
 					log.Println("获取另一用户id失败：" + err.Error())
-					// c.JSON(http.StatusOK, gin.H{
-					// 	"code": cont.INTERNAL_ERROR,
-					// 	"msg":  "系统异常：" + err.Error(),
-					// })
 					contactList[cnt].Name = "获取错误，刷新以重试"
 					contactList[cnt].RoomID = ""
 					contactList[cnt].Type = -1
@@ -59,16 +57,15 @@ func ChatList() gin.HandlerFunc {
 				contact, err := sqldb.GetUserBasicByID(id)
 				if err != nil {
 					log.Println("获取另一用户信息失败：" + err.Error())
-					// c.JSON(http.StatusOK, gin.H{
-					// 	"code": cont.INTERNAL_ERROR,
-					// 	"msg":  "系统异常：" + err.Error(),
-					// })
 					contactList[cnt].Name = "获取错误，刷新以重试"
 					contactList[cnt].RoomID = ""
 					contactList[cnt].Type = -1
 					continue
 				}
-
+				fmt.Println(contact)
+				// if contact.Nickname == "" {
+				// 	fmt.Println(1)
+				// }
 				contactList[cnt].Name = contact.Nickname
 				contactList[cnt].RoomID = ur.RoomID
 				contactList[cnt].Type = 1
