@@ -13,7 +13,7 @@
             <h1 class="text-xl font-bold">IM即时通讯系统</h1>
             <div class="flex items-center space-x-4">
                 <span id="user-nickname" class="text-sm">加载中...</span>
-                <img id="user-avatar" src="https://via.placeholder.com/32" alt="头像" class="w-8 h-8 rounded-full">
+                <img id="user-avatar" src="https://avatars.githubusercontent.com/u/148515933?s=400&u=7cbff7c77a33416cabfe463fff24495157026760&v=4" alt="头像" class="w-8 h-8 rounded-full">
                 <button id="logout-btn" class="text-sm bg-indigo-700 hover:bg-indigo-800 px-3 py-1 rounded">
                     退出登录
                 </button>
@@ -23,11 +23,11 @@
 
     <!-- 主要内容区域 -->
     <div class="flex-1 flex overflow-hidden">
-        <!-- 左侧好友列表 -->
+        <!-- 左侧联系人列表 -->
         <div class="w-1/4 bg-white border-r border-gray-200 flex flex-col">
             <div class="p-4 border-b border-gray-200">
                 <div class="relative">
-                    <input type="text" id="search-input" placeholder="搜索好友" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="text" id="search-input" placeholder="搜索联系人" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                     <button id="search-btn" class="absolute right-2 top-2 text-gray-500 hover:text-indigo-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -37,8 +37,8 @@
             </div>
             
             <div class="flex-1 overflow-y-auto p-2" id="friend-list">
-                <!-- 好友列表将通过JavaScript动态加载 -->
-                <div class="text-center text-gray-500 py-4">加载好友列表中...</div>
+                <!-- 联系人列表将通过JavaScript动态加载 -->
+                <div class="text-center text-gray-500 py-4">加载联系人列表中...</div>
             </div>
             
             <div class="p-4 border-t border-gray-200">
@@ -46,7 +46,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    添加好友
+                    添加联系人
                 </button>
             </div>
         </div>
@@ -66,7 +66,7 @@
             <!-- 聊天消息区域 -->
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 bg-gray-50">
                 <div class="flex items-center justify-center h-full">
-                    <p class="text-gray-500">选择一个好友开始聊天</p>
+                    <p class="text-gray-500">选择一个联系人开始聊天</p>
                 </div>
             </div>
             
@@ -216,18 +216,48 @@
             
             // 获取好友列表
             async function fetchFriends() {
-                // 这里需要根据后端API调整，目前后端没有直接获取好友列表的API
-                // 可以通过获取聊天室列表间接获取好友
-                
-                // 清空好友列表
-                friendList.innerHTML = '';
-                
-                // 模拟好友列表，实际项目中应该从后端获取
-                friends = [];
+                try {
+                    // 调用后端API获取联系人列表
+                    const response = await fetch('http://localhost:8081/user/chatlist', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': token
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // 清空好友列表
+                    friendList.innerHTML = '';
+                    
+                    if (data.code === 111) { // 成功状态码
+                        const chatlist = data.data.chatlist;
+                        
+                        // 处理联系人列表数据
+                        friends = chatlist.map(contact => {
+                            return {
+                                nickname: contact.name,
+                                room_id: contact.room_id,
+                                type: contact.type, // 1私聊 2群聊
+                                last_message: '',
+                                avatar: 'https://avatars.githubusercontent.com/u/148515933?s=400&u=7cbff7c77a33416cabfe463fff24495157026760&v=4' // 默认头像
+                            };
+                        });
+                        
+                        // 渲染好友列表
+                        renderFriendList(friends);
+                    } else {
+                        console.error('获取联系人列表失败:', data.msg);
+                        friendList.innerHTML = '<div class="text-center text-gray-500 py-4">获取联系人列表失败，请刷新重试</div>';
+                    }
+                } catch (error) {
+                    console.error('获取联系人列表出错:', error);
+                    friendList.innerHTML = '<div class="text-center text-gray-500 py-4">网络错误，请稍后重试</div>';
+                }
                 
                 // 如果好友列表为空，显示提示信息
                 if (friends.length === 0) {
-                    friendList.innerHTML = '<div class="text-center text-gray-500 py-4">暂无好友，请添加好友</div>';
+                    friendList.innerHTML = '<div class="text-center text-gray-500 py-4">暂无联系人，请添加好友</div>';
                 }
             }
             
@@ -348,18 +378,24 @@
             }
             
             // 打开聊天
-            function openChat(roomId, user) {
+            function openChat(roomId, contact) {
                 currentRoomId = roomId;
-                currentChatUser = user;
+                currentChatUser = contact;
                 
-                // 更新聊天标题
-                chatTitle.textContent = user.nickname || user.account;
+                // 更新聊天标题，根据类型显示不同的标题
+                const chatType = contact.type === 1 ? '私聊' : '群聊';
+                chatTitle.innerHTML = `${contact.nickname} <span class="text-sm text-gray-500">(${chatType})</span>`;
                 
                 // 显示聊天输入区域
                 chatInputArea.classList.remove('hidden');
                 
-                // 显示聊天操作区域
+                // 显示聊天操作区域，只有私聊才显示删除好友按钮
                 chatActions.classList.remove('hidden');
+                if (contact.type === 1) {
+                    deleteFriendBtn.classList.remove('hidden');
+                } else {
+                    deleteFriendBtn.classList.add('hidden');
+                }
                 
                 // 加载聊天记录
                 loadChatMessages(roomId);
@@ -416,10 +452,17 @@
             }
             
             // 删除好友
-            async function deleteFriend(userId) {
+            async function deleteFriend(roomId) {
                 try {
+                    // 从当前好友列表中找到对应的好友信息
+                    const friend = friends.find(f => f.room_id === roomId);
+                    if (!friend) {
+                        throw new Error('找不到该好友信息');
+                    }
+                    
+                    // 构建请求参数
                     const formData = new FormData();
-                    formData.append('user_id', userId);
+                    formData.append('room_id', roomId);
                     
                     const response = await fetch('http://localhost:8081/user/delete', {
                         method: 'DELETE',
@@ -583,11 +626,17 @@
             
             // 删除好友
             deleteFriendBtn.addEventListener('click', async function() {
-                if (!currentChatUser) return;
+                if (!currentChatUser || !currentRoomId) return;
                 
-                if (confirm(`确定要删除好友 ${currentChatUser.nickname || currentChatUser.account} 吗？`)) {
+                // 只有私聊才能删除好友
+                if (currentChatUser.type !== 1) {
+                    alert('只能删除私聊联系人');
+                    return;
+                }
+                
+                if (confirm(`确定要删除好友 ${currentChatUser.nickname} 吗？`)) {
                     try {
-                        await deleteFriend(currentChatUser.user_id);
+                        await deleteFriend(currentRoomId);
                         
                         // 重新获取好友列表
                         fetchFriends();
@@ -596,7 +645,7 @@
                         currentRoomId = null;
                         currentChatUser = null;
                         chatTitle.textContent = '请选择一个聊天';
-                        chatMessages.innerHTML = '<div class="flex items-center justify-center h-full"><p class="text-gray-500">选择一个好友开始聊天</p></div>';
+                        chatMessages.innerHTML = '<div class="flex items-center justify-center h-full"><p class="text-gray-500">选择一个联系人开始聊天</p></div>';
                         chatInputArea.classList.add('hidden');
                         chatActions.classList.add('hidden');
                         
@@ -607,23 +656,36 @@
                 }
             });
             
-            // 搜索好友（本地搜索）
+            // 搜索联系人（本地搜索）
             searchBtn.addEventListener('click', function() {
                 const keyword = searchInput.value.trim().toLowerCase();
                 if (!keyword) {
-                    // 显示所有好友
-                    fetchFriends();
+                    // 显示所有联系人
+                    renderFriendList(friends);
                     return;
                 }
                 
-                // 过滤好友列表
+                // 过滤联系人列表
                 const filteredFriends = friends.filter(friend => {
-                    return friend.nickname.toLowerCase().includes(keyword) || 
-                           friend.account.toLowerCase().includes(keyword);
+                    return friend.nickname.toLowerCase().includes(keyword);
                 });
                 
-                // 更新好友列表
+                // 更新联系人列表
                 renderFriendList(filteredFriends);
+            });
+            
+            // 搜索框回车事件
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    searchBtn.click();
+                }
+            });
+            
+            // 搜索框清空事件
+            searchInput.addEventListener('input', function() {
+                if (this.value.trim() === '') {
+                    renderFriendList(friends);
+                }
             });
             
             // 渲染好友列表
@@ -632,7 +694,7 @@
                 friendList.innerHTML = '';
                 
                 if (friendsList.length === 0) {
-                    friendList.innerHTML = '<div class="text-center text-gray-500 py-4">未找到匹配的好友</div>';
+                    friendList.innerHTML = '<div class="text-center text-gray-500 py-4">未找到匹配的联系人</div>';
                     return;
                 }
                 
@@ -641,19 +703,27 @@
                     const friendElement = document.createElement('div');
                     friendElement.className = 'p-2 hover:bg-gray-100 rounded-md cursor-pointer';
                     friendElement.dataset.roomId = friend.room_id;
-                    friendElement.dataset.userId = friend.user_id;
+                    friendElement.dataset.type = friend.type;
+                    
+                    // 根据类型显示不同的图标
+                    const typeIcon = friend.type === 1 ? 
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>' : 
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" /></svg>';
                     
                     friendElement.innerHTML = `
                         <div class="flex items-center">
                             <img src="${friend.avatar || 'https://via.placeholder.com/40'}" alt="头像" class="w-10 h-10 rounded-full mr-3">
                             <div class="flex-1">
-                                <p class="font-medium">${friend.nickname || friend.account}</p>
+                                <div class="flex items-center">
+                                    <p class="font-medium">${friend.nickname}</p>
+                                    <span class="ml-2" title="${friend.type === 1 ? '私聊' : '群聊'}">${typeIcon}</span>
+                                </div>
                                 <p class="text-sm text-gray-500 truncate">${friend.last_message || ''}</p>
                             </div>
                         </div>
                     `;
                     
-                    // 点击好友打开聊天
+                    // 点击联系人打开聊天
                     friendElement.addEventListener('click', function() {
                         openChat(friend.room_id, friend);
                     });
