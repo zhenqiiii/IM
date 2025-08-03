@@ -90,7 +90,7 @@
                 formData.append('email', email);
                 
                 try {
-                    const response = await fetch('http://localhost:8081/verify', {
+                    const response = await fetch('/verify', {
                         method: 'POST',
                         body: formData
                     });
@@ -150,7 +150,7 @@
                 formData.append('password', password);
                 
                 try {
-                    const response = await fetch('http://localhost:8081/register', {
+                    const response = await fetch('/register', {
                         method: 'POST',
                         body: formData
                     });

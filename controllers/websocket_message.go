@@ -19,10 +19,10 @@ import (
 // 不同聊天室的消息根据消息体MessageBody中的RoomID字段区分
 
 // 用于存放客户端发送的消息内容，用户身份从上下文中获得
-type MessageBody struct {
-	Message string `json:"message"`
-	RoomID  string `json:"room_id"` //区分聊天室
-}
+// type MessageBody struct {
+// 	Message string `json:"message"`
+// 	RoomID  string `json:"room_id"` //区分聊天室
+// }
 
 // websocket升级实例
 var upgrader = websocket.Upgrader{}
@@ -49,18 +49,16 @@ func WebsocketMessage() gin.HandlerFunc {
 		userInfo := c.MustGet("user_claims").(*jwt.UserClaims)
 		conns[userInfo.UserID] = conn
 
-		// 循环：持续读取消息内容
+		// 循环：保持连接，读取消息内容
 		// 用户自己在客户端发送的消息在此接收，然后分发给其他用户
+		// TODO：用户刷新页面导致的连接中断处理-心跳检测？
 		for {
 			// 获取消息
-			msg := new(MessageBody)
+			msg := new(models.MessageBasic)
 			err = conn.ReadJSON(msg)
 			if err != nil {
 				log.Println("消息接收失败：" + err.Error())
-				// c.JSON(http.StatusOK, gin.H{
-				// 	"code": cont.INTERNAL_ERROR,
-				// 	"msg":  "消息发送失败：" + err.Error(),
-				// })
+				log.Println("用户可能刷新页面导致websocket连接中断")
 				return
 			}
 			// 判断用户是否属于消息体中RoomID字段对应的房间
@@ -75,11 +73,7 @@ func WebsocketMessage() gin.HandlerFunc {
 				return
 			}
 			// 保存消息
-			err = sqldb.InsertMessageBasic(models.MessageBasic{
-				UserID: userInfo.UserID, // userclaims获取
-				RoomID: msg.RoomID,      // 消息体
-				Data:   msg.Message,     // 消息体
-			})
+			err = sqldb.InsertMessageBasic(*msg)
 			if err != nil {
 				log.Println("消息保存失败：" + err.Error())
 				return

@@ -150,7 +150,7 @@
             // 获取用户信息
             async function fetchUserInfo() {
                 try {
-                    const response = await fetch('http://localhost:8081/user/detail', {
+                    const response = await fetch('/user/detail', {
                         method: 'GET',
                         headers: {
                             'Authorization': token
@@ -227,7 +227,7 @@
                         formData.append(key, userData[key]);
                     }
                     
-                    const response = await fetch('http://localhost:8081/user/update', {
+                    const response = await fetch('/user/update', {
                         method: 'POST',
                         headers: {
                             'Authorization': token
@@ -260,7 +260,7 @@
                     formData.append('current_password', currentPassword);
                     formData.append('new_password', newPassword);
                     
-                    const response = await fetch('http://localhost:8081/user/update_password', {
+                    const response = await fetch('/user/update_password', {
                         method: 'POST',
                         headers: {
                             'Authorization': token

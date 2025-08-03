@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -62,10 +61,6 @@ func ChatList() gin.HandlerFunc {
 					contactList[cnt].Type = -1
 					continue
 				}
-				fmt.Println(contact)
-				// if contact.Nickname == "" {
-				// 	fmt.Println(1)
-				// }
 				contactList[cnt].Name = contact.Nickname
 				contactList[cnt].RoomID = ur.RoomID
 				contactList[cnt].Type = 1

@@ -182,7 +182,7 @@
             // 获取当前用户信息
             async function fetchCurrentUser() {
                 try {
-                    const response = await fetch('http://localhost:8081/user/detail', {
+                    const response = await fetch('/user/detail', {
                         method: 'GET',
                         headers: {
                             'Authorization': token
@@ -218,7 +218,7 @@
             async function fetchFriends() {
                 try {
                     // 调用后端API获取联系人列表
-                    const response = await fetch('http://localhost:8081/user/chatlist', {
+                    const response = await fetch('/user/chatlist', {
                         method: 'GET',
                         headers: {
                             'Authorization': token
@@ -264,7 +264,10 @@
             // 建立WebSocket连接
             function connectWebSocket() {
                 // 构建WebSocket URL，指向后端服务
-                const wsUrl = `ws://localhost:8081/user/msg?token=${token}`;
+                // 获取当前域名和端口
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const host = window.location.host;
+                const wsUrl = `${protocol}//${host}/user/msg?token=${token}`;
                 
                 // 创建WebSocket连接
                 socket = new WebSocket(wsUrl);
@@ -281,7 +284,31 @@
                     
                     // 如果当前正在查看的聊天室与消息的聊天室相同，则显示消息
                     if (currentRoomId === message.room_id) {
+                        // 检查日期是否需要添加分隔线
+                        const messageDate = new Date(message.created_at);
+                        const messageDateStr = messageDate.toDateString();
+                        
+                        // 获取最后一个日期分隔线或消息的日期
+                        let lastDateStr = null;
+                        const dateElements = chatMessages.querySelectorAll('.date-separator');
+                        if (dateElements.length > 0) {
+                            const lastDateElement = dateElements[dateElements.length - 1];
+                            lastDateStr = lastDateElement.getAttribute('data-date');
+                        }
+                        
+                        // 如果日期不同，添加新的日期分隔线
+                        if (!lastDateStr || messageDateStr !== lastDateStr) {
+                            addDateSeparator(messageDate);
+                        }
+                        
+                        // 添加消息到UI
                         appendMessage(message);
+                        
+                        // 添加消息到当前消息列表
+                        currentRoomMessages.push(message);
+                        
+                        // 滚动到底部
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
                     }
                     
                     // 更新好友列表中的最新消息
@@ -305,10 +332,65 @@
                 // 实际项目中应该更新好友列表中的最新消息
             }
             
+            // 添加日期分隔线
+            function addDateSeparator(date) {
+                const dateStr = date.getFullYear() + '/' + 
+                               String(date.getMonth() + 1).padStart(2, '0') + '/' + 
+                               String(date.getDate()).padStart(2, '0');
+                
+                const separatorElement = document.createElement('div');
+                separatorElement.className = 'flex justify-center my-4 date-separator';
+                separatorElement.setAttribute('data-date', date.toDateString());
+                separatorElement.innerHTML = `
+                    <div class="px-4 py-1 bg-gray-100 rounded-full text-xs text-gray-500">
+                        ${dateStr}
+                    </div>
+                `;
+                
+                chatMessages.appendChild(separatorElement);
+            }
+            
+            // 聊天记录分页变量
+            let currentPage = 1;
+            let isLoadingMessages = false;
+            let hasMoreMessages = true;
+            let currentRoomMessages = [];
+            
             // 加载聊天记录
-            async function loadChatMessages(roomId, page = 1, pageSize = 20) {
+            async function loadChatMessages(roomId, page = 1, pageSize = 20, append = false) {
                 try {
-                    const response = await fetch(`http://localhost:8081/user/history?room_id=${roomId}&page_index=${page}&page_size=${pageSize}`, {
+                    // 如果正在加载或没有更多消息，则返回
+                    if (isLoadingMessages || (page > 1 && !hasMoreMessages)) {
+                        return;
+                    }
+                    
+                    isLoadingMessages = true;
+                    
+                    // 如果是加载第一页，重置分页变量
+                    if (page === 1 && !append) {
+                        currentPage = 1;
+                        hasMoreMessages = true;
+                        currentRoomMessages = [];
+                    }
+                    
+                    // 显示加载指示器
+                    if (page > 1) {
+                        const loadingIndicator = document.createElement('div');
+                        loadingIndicator.id = 'loading-indicator';
+                        loadingIndicator.className = 'flex justify-center my-4';
+                        loadingIndicator.innerHTML = `
+                            <div class="px-4 py-1 bg-gray-100 rounded-full text-xs text-gray-500 flex items-center">
+                                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                加载更多消息...
+                            </div>
+                        `;
+                        chatMessages.insertBefore(loadingIndicator, chatMessages.firstChild);
+                    }
+                    
+                    const response = await fetch(`/user/history?room_id=${roomId}&page_index=${page}&page_size=${pageSize}`, {
                         method: 'GET',
                         headers: {
                             'Authorization': token
@@ -317,36 +399,114 @@
                     
                     const data = await response.json();
                     
+                    // 移除加载指示器
+                    const loadingIndicator = document.getElementById('loading-indicator');
+                    if (loadingIndicator) {
+                        loadingIndicator.remove();
+                    }
+                    
                     if (data.code === 111) { // 成功状态码
-                        // 清空聊天消息区域
-                        chatMessages.innerHTML = '';
-                        
                         // 显示聊天记录
                         const messages = data.data.list;
-                        if (messages.length === 0) {
+                        
+                        // 如果没有消息，且是第一页，显示暂无聊天记录
+                        if (messages.length === 0 && page === 1 && !append) {
                             chatMessages.innerHTML = '<div class="flex justify-center my-4"><p class="text-gray-500">暂无聊天记录</p></div>';
+                            hasMoreMessages = false;
+                        } else if (messages.length === 0) {
+                            // 如果是其他页且没有消息，说明没有更多消息了
+                            hasMoreMessages = false;
+                            
+                            // 添加没有更多消息的提示
+                            const noMoreMessagesIndicator = document.createElement('div');
+                            noMoreMessagesIndicator.className = 'flex justify-center my-4';
+                            noMoreMessagesIndicator.innerHTML = `
+                                <div class="px-4 py-1 bg-gray-100 rounded-full text-xs text-gray-500">
+                                    没有更多消息了
+                                </div>
+                            `;
+                            chatMessages.insertBefore(noMoreMessagesIndicator, chatMessages.firstChild);
                         } else {
                             // 按时间顺序显示消息
                             messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
                             
-                            messages.forEach(msg => {
-                                const messageObj = {
-                                    user_id: msg.user_id,
-                                    room_id: roomId,
-                                    message: msg.data,
-                                    created_at: msg.created_at
-                                };
-                                appendMessage(messageObj);
-                            });
+                            // 保存当前滚动位置和高度
+                            const scrollPos = chatMessages.scrollTop;
+                            const oldHeight = chatMessages.scrollHeight;
                             
-                            // 滚动到底部
-                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                            // 合并消息到当前房间消息列表
+                            if (page === 1 && !append) {
+                                // 如果是第一页且不是追加模式，清空聊天消息区域
+                                chatMessages.innerHTML = '';
+                                currentRoomMessages = messages;
+                            } else {
+                                // 将新消息添加到数组开头
+                                currentRoomMessages = [...messages, ...currentRoomMessages];
+                            }
+                            
+                            // 重新渲染所有消息或追加新消息
+                            if (page > 1 || append) {
+                                // 如果是加载更多或追加模式
+                                if (page > 1) {
+                                    // 清空聊天区域
+                                    chatMessages.innerHTML = '';
+                                    
+                                    // 重新渲染所有消息
+                                    let currentDate = null;
+                                    
+                                    currentRoomMessages.forEach(msg => {
+                                        const messageDate = new Date(msg.created_at);
+                                        const messageDateStr = messageDate.toDateString();
+                                        
+                                        // 如果日期变化，添加日期分隔线
+                                        if (!currentDate || messageDateStr !== currentDate) {
+                                            currentDate = messageDateStr;
+                                            addDateSeparator(messageDate);
+                                        }
+                                        
+                                        // 直接传递MessageBasic对象，包含所有必要字段
+                                        appendMessage(msg);
+                                    });
+                                    
+                                    // 计算新增内容的高度，并调整滚动位置
+                                    const newHeight = chatMessages.scrollHeight;
+                                    chatMessages.scrollTop = scrollPos + (newHeight - oldHeight);
+                                } else {
+                                    // 如果是追加模式但不是加载更多，滚动到底部
+                                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                                }
+                            } else {
+                                // 如果是第一页且不是追加模式，直接渲染
+                                let currentDate = null;
+                                
+                                messages.forEach(msg => {
+                                    const messageDate = new Date(msg.created_at);
+                                    const messageDateStr = messageDate.toDateString();
+                                    
+                                    // 如果日期变化，添加日期分隔线
+                                    if (!currentDate || messageDateStr !== currentDate) {
+                                        currentDate = messageDateStr;
+                                        addDateSeparator(messageDate);
+                                    }
+                                    
+                                    // 直接传递MessageBasic对象，包含所有必要字段
+                                    appendMessage(msg);
+                                });
+                                
+                                // 滚动到底部
+                                chatMessages.scrollTop = chatMessages.scrollHeight;
+                            }
+                            
+                            // 更新当前页码
+                            currentPage = page;
                         }
                     } else {
                         console.error('获取聊天记录失败:', data.msg);
                     }
                 } catch (error) {
                     console.error('获取聊天记录出错:', error);
+                } finally {
+                    isLoadingMessages = false;
                 }
             }
             
@@ -357,17 +517,26 @@
                 const messageElement = document.createElement('div');
                 messageElement.className = `flex ${isCurrentUser ? 'justify-end' : 'justify-start'} mb-4`;
                 
-                const messageTime = new Date(message.created_at || new Date()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                // 格式化发送时间，只精确到分钟
+                const createdTime = new Date(message.created_at || new Date()).toLocaleTimeString([], { 
+                    hour: '2-digit', minute: '2-digit' 
+                });
+                
+                // 获取用户昵称
+                const userName = isCurrentUser ? currentUser.nickname : (currentChatUser?.nickname || '用户');
                 
                 messageElement.innerHTML = `
-                    <div class="${isCurrentUser ? 'order-2' : 'order-1'} max-w-xs mx-2">
-                        <div class="${isCurrentUser ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-800'} rounded-lg px-4 py-2 shadow">
-                            <p>${message.message}</p>
-                        </div>
-                        <span class="text-xs text-gray-500 ${isCurrentUser ? 'text-right' : 'text-left'} block mt-1">${messageTime}</span>
-                    </div>
                     <div class="${isCurrentUser ? 'order-1' : 'order-2'} flex-shrink-0">
                         <img src="${isCurrentUser ? (currentUser.avatar || 'https://via.placeholder.com/32') : (currentChatUser?.avatar || 'https://via.placeholder.com/32')}" alt="头像" class="w-8 h-8 rounded-full">
+                    </div>
+                    <div class="${isCurrentUser ? 'order-2' : 'order-1'} max-w-xs mx-2">
+                        <div class="${isCurrentUser ? 'text-right' : 'text-left'} text-xs text-gray-600 mb-1">${userName}</div>
+                        <div class="${isCurrentUser ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-800'} rounded-lg px-4 py-2 shadow">
+                            <p>${message.data || message.message}</p>
+                        </div>
+                        <div class="text-xs text-gray-500 ${isCurrentUser ? 'text-right' : 'text-left'} mt-1">
+                            <span>${createdTime}</span>
+                        </div>
                     </div>
                 `;
                 
@@ -377,10 +546,38 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
             
+            // 添加滚动事件监听，上滑加载更多消息
+            function setupScrollListener() {
+                // 移除之前的事件监听器（如果有）
+                chatMessages.removeEventListener('scroll', handleScroll);
+                
+                // 添加新的事件监听器
+                chatMessages.addEventListener('scroll', handleScroll);
+            }
+            
+            // 处理滚动事件
+            function handleScroll() {
+                // 如果滚动到顶部附近（距离顶部小于50像素），加载更多消息
+                if (chatMessages.scrollTop < 50 && !isLoadingMessages && hasMoreMessages && currentRoomId) {
+                    // 加载下一页消息
+                    loadChatMessages(currentRoomId, currentPage + 1, 20, true);
+                }
+            }
+            
             // 打开聊天
             function openChat(roomId, contact) {
+                // 如果是同一个聊天，不重新加载
+                if (currentRoomId === roomId) {
+                    return;
+                }
+                
                 currentRoomId = roomId;
                 currentChatUser = contact;
+                
+                // 重置分页变量
+                currentPage = 1;
+                hasMoreMessages = true;
+                currentRoomMessages = [];
                 
                 // 更新聊天标题，根据类型显示不同的标题
                 const chatType = contact.type === 1 ? '私聊' : '群聊';
@@ -399,12 +596,15 @@
                 
                 // 加载聊天记录
                 loadChatMessages(roomId);
+                
+                // 设置滚动事件监听
+                setupScrollListener();
             }
             
             // 搜索好友
             async function searchFriend(account) {
                 try {
-                    const response = await fetch(`http://localhost:8081/user/query?account=${account}`, {
+                    const response = await fetch(`/user/query?account=${account}`, {
                         method: 'GET',
                         headers: {
                             'Authorization': token
@@ -430,7 +630,7 @@
                     const formData = new FormData();
                     formData.append('account', account);
                     
-                    const response = await fetch('http://localhost:8081/user/add', {
+                    const response = await fetch('/user/add', {
                         method: 'POST',
                         headers: {
                             'Authorization': token
@@ -464,7 +664,7 @@
                     const formData = new FormData();
                     formData.append('room_id', roomId);
                     
-                    const response = await fetch('http://localhost:8081/user/delete', {
+                    const response = await fetch('/user/delete', {
                         method: 'DELETE',
                         headers: {
                             'Authorization': token
@@ -513,15 +713,37 @@
                     return;
                 }
                 
-                // 构建消息对象
+                // 获取当前日期
+                const now = new Date();
+                const todayStr = now.toDateString();
+                
+                // 检查是否需要添加日期分隔线
+                let lastDateStr = null;
+                const dateElements = chatMessages.querySelectorAll('.date-separator');
+                if (dateElements.length > 0) {
+                    const lastDateElement = dateElements[dateElements.length - 1];
+                    lastDateStr = lastDateElement.getAttribute('data-date');
+                }
+                
+                // 如果日期不同或没有日期分隔线，添加新的日期分隔线
+                if (!lastDateStr || todayStr !== lastDateStr) {
+                    addDateSeparator(now);
+                }
+                
+                // 构建消息对象，使用data字段匹配MessageBasic结构
                 const messageObj = {
                     user_id: currentUser.user_id,
                     room_id: currentRoomId,
-                    message: message
+                    data: message,
+                    created_at: now.toISOString() // 添加创建时间
                 };
                 
                 // 发送消息
                 socket.send(JSON.stringify(messageObj));
+                
+                // 添加消息到当前消息列表（本地显示，不等待服务器响应）
+                // 注意：服务器响应后会通过WebSocket再次收到这条消息，但由于已经添加过，不会重复显示
+                currentRoomMessages.push(messageObj);
                 
                 // 清空输入框
                 messageInput.value = '';
