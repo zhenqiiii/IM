@@ -12,12 +12,14 @@ import (
 
 // 联系人结构体
 // Name: 名称
+// Account: 账号，用于后续查看好友资料(群聊不需要)
 // RoomID: 所属房间id,用于后续获取聊天记录
 // Type: 类型 1私聊 2群聊, -1表示数据获取出错情况，用于在聊天人列表中显示聊天类型
 type Contact struct {
-	Name   string `json:"name"`
-	RoomID string `json:"room_id"`
-	Type   int    `json:"type"`
+	Name    string `json:"name"`
+	Account string `json:"account"`
+	RoomID  string `json:"room_id"`
+	Type    int    `json:"type"`
 }
 
 // 获取联系人（好友&群聊）列表
@@ -49,6 +51,7 @@ func ChatList() gin.HandlerFunc {
 				if err != nil {
 					log.Println("获取另一用户id失败：" + err.Error())
 					contactList[cnt].Name = "获取错误，刷新以重试"
+					contactList[cnt].Account = ""
 					contactList[cnt].RoomID = ""
 					contactList[cnt].Type = -1
 					continue
@@ -57,11 +60,13 @@ func ChatList() gin.HandlerFunc {
 				if err != nil {
 					log.Println("获取另一用户信息失败：" + err.Error())
 					contactList[cnt].Name = "获取错误，刷新以重试"
+					contactList[cnt].Account = ""
 					contactList[cnt].RoomID = ""
 					contactList[cnt].Type = -1
 					continue
 				}
 				contactList[cnt].Name = contact.Nickname
+				contactList[cnt].Account = contact.Account
 				contactList[cnt].RoomID = ur.RoomID
 				contactList[cnt].Type = 1
 			case 0: //群聊
@@ -73,11 +78,13 @@ func ChatList() gin.HandlerFunc {
 					// 	"msg":  "系统异常：" + err.Error(),
 					// })
 					contactList[cnt].Name = "获取错误，刷新以重试"
+					contactList[cnt].Account = ""
 					contactList[cnt].RoomID = ""
 					contactList[cnt].Type = -1
 					continue
 				}
 				contactList[cnt].Name = room.Name
+				contactList[cnt].Account = "群聊"
 				contactList[cnt].RoomID = room.RoomID
 				contactList[cnt].Type = 0
 			}

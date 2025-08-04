@@ -3,72 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>欢迎使用 - IM即时通讯系统</title>
+    <title>欢迎使用 - DINGDANG叮当</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-br from-indigo-500 to-purple-600 min-h-screen flex items-center justify-center p-4">
-    <div class="max-w-4xl w-full bg-white rounded-xl shadow-2xl overflow-hidden">
+<body class="bg-gradient-to-br from-slate-50 to-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-4xl w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-gray-200/50">
         <div class="flex flex-col md:flex-row">
             <!-- 左侧信息区域 -->
-            <div class="w-full md:w-1/2 bg-indigo-700 text-white p-12 flex flex-col justify-between">
+            <div class="w-full md:w-1/2 bg-gradient-to-br from-gray-900 to-gray-800 text-white p-12 flex flex-col justify-between">
                 <div>
-                    <h1 class="text-4xl font-bold mb-6">IM即时通讯系统</h1>
-                    <p class="text-indigo-200 mb-8">连接你我，畅享沟通的乐趣</p>
+                    <h1 class="text-4xl font-bold mb-6 tracking-wide">DINGDANG叮当</h1>
+                    <p class="text-gray-300 mb-8 text-lg">连接你我，畅享沟通的乐趣</p>
                     
-                    <div class="space-y-4">
+                    <div class="space-y-6">
                         <div class="flex items-start">
-                            <svg class="h-6 w-6 mr-2 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="h-6 w-6 mr-3 text-gray-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <p>简洁直观的用户界面</p>
+                            <p class="text-gray-200">简洁直观的用户界面</p>
                         </div>
                         <div class="flex items-start">
-                            <svg class="h-6 w-6 mr-2 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="h-6 w-6 mr-3 text-gray-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <p>实时消息传递</p>
+                            <p class="text-gray-200">实时消息传递</p>
                         </div>
                         <div class="flex items-start">
-                            <svg class="h-6 w-6 mr-2 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="h-6 w-6 mr-3 text-gray-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <p>安全可靠的通讯体验</p>
+                            <p class="text-gray-200">安全可靠的通讯体验</p>
                         </div>
                     </div>
                 </div>
                 
-                <div class="mt-8 text-sm text-indigo-200">
-                    &copy; 2023 IM即时通讯系统 - 保留所有权利
+                <div class="mt-8 text-sm text-gray-400">
+                    &copy; 2025 DINGDANG保留所有权利
                 </div>
             </div>
             
             <!-- 右侧操作区域 -->
             <div class="w-full md:w-1/2 p-12">
                 <div class="text-center mb-10">
-                    <h2 class="text-3xl font-bold text-gray-800">欢迎回来</h2>
+                    <h2 class="text-3xl font-bold text-gray-900">欢迎回来</h2>
                     <p class="text-gray-600 mt-2">请登录您的账号或创建新账号</p>
                 </div>
                 
-                <div class="space-y-6">
-                    <a href="login.html" class="block w-full py-3 px-4 text-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200">
+                <div id="login-register-section" class="space-y-4">
+                    <a href="login.html" class="block w-full py-4 px-6 text-center bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-xl transition-all duration-200 shadow-sm hover:shadow-md">
                         登录账号
                     </a>
                     
-                    <a href="register.html" class="block w-full py-3 px-4 text-center border border-gray-300 hover:border-indigo-500 hover:text-indigo-500 text-gray-700 font-medium rounded-lg transition duration-200">
+                    <a href="register.html" class="block w-full py-4 px-6 text-center border border-gray-200/60 hover:border-gray-400 hover:bg-gray-50 text-gray-700 font-medium rounded-xl transition-all duration-200">
                         注册新账号
                     </a>
                 </div>
                 
-                <div id="logged-in-section" class="hidden space-y-6 mt-8">
-                    <div class="text-center text-gray-700 mb-4">
+                <div id="logged-in-section" class="hidden space-y-4 mt-8">
+                    <div class="text-center text-gray-700 mb-6 p-4 bg-gray-50/80 rounded-xl border border-gray-200/60">
                         您已登录，可以直接进入聊天
                     </div>
                     
-                    <a href="chat.html" class="block w-full py-3 px-4 text-center bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition duration-200">
+                    <a href="chat.html" class="block w-full py-4 px-6 text-center bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-xl transition-all duration-200 shadow-sm hover:shadow-md">
                         进入聊天
                     </a>
                     
-                    <button id="logout-btn" class="block w-full py-3 px-4 text-center border border-red-300 hover:border-red-500 hover:text-red-500 text-gray-700 font-medium rounded-lg transition duration-200">
+                    <button id="logout-btn" class="block w-full py-4 px-6 text-center border border-red-200 hover:border-red-400 hover:bg-red-50 hover:text-red-600 text-gray-700 font-medium rounded-xl transition-all duration-200">
                         退出登录
                     </button>
                 </div>
@@ -80,7 +80,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 检查是否已登录
             const token = localStorage.getItem('token');
-            const loginRegisterSection = document.querySelector('.space-y-6:not(#logged-in-section)');
+            const loginRegisterSection = document.getElementById('login-register-section');
             const loggedInSection = document.getElementById('logged-in-section');
             const logoutBtn = document.getElementById('logout-btn');
             

@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人资料 - IM即时通讯系统</title>
+    <title>个人资料 - DINGDANG</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gradient-to-br from-slate-50 to-gray-100 min-h-screen">
     <!-- 顶部导航栏 -->
-    <header class="bg-indigo-600 text-white p-4 shadow-md">
+    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200/50 text-gray-800 p-4 shadow-sm">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">IM即时通讯系统</h1>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-wide">DINGDANG</h1>
             <div class="flex items-center space-x-4">
-                <a href="chat.html" class="text-sm hover:underline">返回聊天</a>
-                <button id="logout-btn" class="text-sm bg-indigo-700 hover:bg-indigo-800 px-3 py-1 rounded">
+                <a href="chat.html" class="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200">返回聊天</a>
+                <button id="logout-btn" class="text-sm bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
                     退出登录
                 </button>
             </div>
@@ -22,27 +22,27 @@
 
     <!-- 主要内容区域 -->
     <div class="container mx-auto py-8 px-4">
-        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="p-6">
-                <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">个人资料</h2>
+        <div class="max-w-2xl mx-auto bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-gray-200/50">
+            <div class="p-8">
+                <h2 class="text-3xl font-bold mb-8 text-center text-gray-900">个人资料</h2>
                 
                 <!-- 错误提示 -->
-                <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                <div id="error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl relative mb-6">
                     <span id="error-text"></span>
                 </div>
                 
                 <!-- 成功提示 -->
-                <div id="success-message" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                <div id="success-message" class="hidden bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl relative mb-6">
                     <span id="success-text"></span>
                 </div>
                 
                 <!-- 个人资料表单 -->
-                <form id="profile-form" class="space-y-6">
+                <form id="profile-form" class="space-y-8">
                     <!-- 头像 -->
                     <div class="flex flex-col items-center space-y-4">
                         <div class="relative">
-                            <img id="avatar-preview" src="https://via.placeholder.com/128" alt="头像" class="w-32 h-32 rounded-full object-cover border-4 border-indigo-200">
-                            <div class="absolute bottom-0 right-0 bg-indigo-600 text-white rounded-full p-2 cursor-pointer hover:bg-indigo-700">
+                            <img id="avatar-preview" src="https://via.placeholder.com/128" alt="头像" class="w-32 h-32 rounded-full object-cover ring-4 ring-white shadow-lg">
+                            <div class="absolute bottom-0 right-0 bg-gray-900 text-white rounded-full p-2 cursor-pointer hover:bg-gray-800 transition-all duration-200 shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -54,65 +54,65 @@
                     
                     <!-- 账号 -->
                     <div>
-                        <label for="account" class="block text-sm font-medium text-gray-700 mb-1">账号</label>
-                        <input type="text" id="account" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 bg-gray-100" readonly>
-                        <p class="mt-1 text-xs text-gray-500">账号创建后不可修改</p>
+                        <label for="account" class="block text-sm font-medium text-gray-700 mb-2">账号</label>
+                        <input type="text" id="account" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/80 text-gray-600" readonly>
+                        <p class="mt-2 text-xs text-gray-500">账号创建后不可修改</p>
                     </div>
                     
                     <!-- 昵称 -->
                     <div>
-                        <label for="nickname" class="block text-sm font-medium text-gray-700 mb-1">昵称</label>
-                        <input type="text" id="nickname" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        <label for="nickname" class="block text-sm font-medium text-gray-700 mb-2">昵称</label>
+                        <input type="text" id="nickname" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
                     </div>
                     
                     <!-- 性别 -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">性别</label>
-                        <div class="flex space-x-4">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="gender" value="1" class="form-radio h-4 w-4 text-indigo-600">
-                                <span class="ml-2">男</span>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">性别</label>
+                        <div class="flex space-x-6">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="gender" value="1" class="form-radio h-4 w-4 text-gray-900 focus:ring-gray-500">
+                                <span class="ml-2 text-gray-700">男</span>
                             </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="gender" value="2" class="form-radio h-4 w-4 text-indigo-600">
-                                <span class="ml-2">女</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="gender" value="2" class="form-radio h-4 w-4 text-gray-900 focus:ring-gray-500">
+                                <span class="ml-2 text-gray-700">女</span>
                             </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="gender" value="0" class="form-radio h-4 w-4 text-indigo-600">
-                                <span class="ml-2">保密</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="gender" value="0" class="form-radio h-4 w-4 text-gray-900 focus:ring-gray-500">
+                                <span class="ml-2 text-gray-700">保密</span>
                             </label>
                         </div>
                     </div>
                     
                     <!-- 邮箱 -->
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
-                        <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 bg-gray-100" readonly>
-                        <p class="mt-1 text-xs text-gray-500">邮箱创建后不可修改</p>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">邮箱</label>
+                        <input type="email" id="email" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/80 text-gray-600" readonly>
+                        <p class="mt-2 text-xs text-gray-500">邮箱创建后不可修改</p>
                     </div>
                     
                     <!-- 修改密码 -->
-                    <div class="pt-4 border-t border-gray-200">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">修改密码</h3>
-                        <div class="space-y-4">
+                    <div class="pt-6 border-t border-gray-200/60">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-6">修改密码</h3>
+                        <div class="space-y-6">
                             <div>
-                                <label for="current-password" class="block text-sm font-medium text-gray-700 mb-1">当前密码</label>
-                                <input type="password" id="current-password" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                <label for="current-password" class="block text-sm font-medium text-gray-700 mb-2">当前密码</label>
+                                <input type="password" id="current-password" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
                             </div>
                             <div>
-                                <label for="new-password" class="block text-sm font-medium text-gray-700 mb-1">新密码</label>
-                                <input type="password" id="new-password" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                <label for="new-password" class="block text-sm font-medium text-gray-700 mb-2">新密码</label>
+                                <input type="password" id="new-password" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
                             </div>
                             <div>
-                                <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">确认新密码</label>
-                                <input type="password" id="confirm-password" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-2">确认新密码</label>
+                                <input type="password" id="confirm-password" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
                             </div>
                         </div>
                     </div>
                     
                     <!-- 提交按钮 -->
-                    <div class="flex justify-end">
-                        <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <div class="flex justify-end pt-4">
+                        <button type="submit" class="px-8 py-3 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200">
                             保存修改
                         </button>
                     </div>

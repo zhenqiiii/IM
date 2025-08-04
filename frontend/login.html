@@ -3,39 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录 - IM即时通讯系统</title>
+    <title>登录 - DINGDANG</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">IM即时通讯系统</h1>
+<body class="bg-gradient-to-br from-slate-50 to-gray-100 h-screen flex items-center justify-center">
+    <div class="bg-white/95 backdrop-blur-md p-10 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200/50">
+        <h1 class="text-3xl font-bold text-center text-gray-900 mb-8 tracking-wide">DINGDANG</h1>
         
-        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+        <div id="error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl relative mb-6">
             <span id="error-text"></span>
         </div>
         
-        <form id="login-form" class="space-y-4">
+        <form id="login-form" class="space-y-6">
             <div>
-                <label for="account" class="block text-sm font-medium text-gray-700">账号</label>
-                <input type="text" id="account" name="account" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <label for="account" class="block text-sm font-medium text-gray-700 mb-2">账号</label>
+                <input type="text" id="account" name="account" required class="w-full px-4 py-3 border border-gray-200/60 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
             </div>
             
             <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">密码</label>
-                <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">密码</label>
+                <input type="password" id="password" name="password" required class="w-full px-4 py-3 border border-gray-200/60 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
             </div>
             
-            <div>
-                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <div class="pt-2">
+                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 hover:shadow-md">
                     登录
                 </button>
             </div>
         </form>
         
-        <div class="mt-4 text-center">
+        <div class="mt-6 text-center">
             <p class="text-sm text-gray-600">
                 还没有账号？ 
-                <a href="register.html" class="font-medium text-indigo-600 hover:text-indigo-500">
+                <a href="register.html" class="font-medium text-gray-900 hover:text-gray-700 transition-colors duration-200">
                     立即注册
                 </a>
             </p>

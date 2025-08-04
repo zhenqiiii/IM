@@ -3,19 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>聊天 - IM即时通讯系统</title>
+    <title>聊天 - DINGDANG</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 h-screen flex flex-col">
+<body class="bg-gradient-to-br from-slate-50 to-gray-100 h-screen flex flex-col">
     <!-- 顶部导航栏 -->
-    <header class="bg-indigo-600 text-white p-4 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">IM即时通讯系统</h1>
-            <div class="flex items-center space-x-4">
-                <span id="user-nickname" class="text-sm">加载中...</span>
-                <img id="user-avatar" src="https://avatars.githubusercontent.com/u/148515933?s=400&u=7cbff7c77a33416cabfe463fff24495157026760&v=4" alt="头像" class="w-8 h-8 rounded-full">
-                <button id="logout-btn" class="text-sm bg-indigo-700 hover:bg-indigo-800 px-3 py-1 rounded">
-                    退出登录
+    <header class="bg-white/90 backdrop-blur-lg border-b border-gray-200/60 text-gray-800 px-4 py-3 shadow-lg">
+        <div class="w-full max-w-none flex items-center justify-between h-16">
+            <!-- 左侧标题 - 绝对左对齐 -->
+            <div class="flex items-center flex-shrink-0">
+                <h1 class="text-3xl lg:text-4xl font-black bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent tracking-widest drop-shadow-sm">
+                    DINGDANG
+                </h1>
+            </div>
+            
+            <!-- 右侧用户信息 - 绝对右对齐 -->
+            <div class="flex items-center justify-end flex-shrink-0">
+                <!-- 用户昵称 - 响应式显示 -->
+                <span id="user-nickname" class="text-sm lg:text-base text-gray-700 font-medium mr-3 lg:mr-4 hidden md:block truncate max-w-32 lg:max-w-48">加载中...</span>
+                
+                <!-- 头像 - 响应式尺寸 -->
+                <img id="user-avatar" src="https://avatars.githubusercontent.com/u/148515933?s=400&u=7cbff7c77a33416cabfe463fff24495157026760&v=4" alt="头像" class="w-10 h-10 lg:w-12 lg:h-12 rounded-full ring-2 ring-white shadow-md mr-3 lg:mr-4">
+                
+                <!-- 用户中心按钮 - 响应式设计 -->
+                <button id="user-center-btn" class="bg-gray-900 hover:bg-gray-800 active:bg-gray-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95">
+                    <span class="hidden sm:inline px-6 py-4 lg:px-7 lg:py-4 text-sm lg:text-base">用户中心</span>
+                    <span class="sm:hidden px-5 py-4 text-xs">中心</span>
                 </button>
             </div>
         </div>
@@ -24,11 +37,11 @@
     <!-- 主要内容区域 -->
     <div class="flex-1 flex overflow-hidden">
         <!-- 左侧联系人列表 -->
-        <div class="w-1/4 bg-white border-r border-gray-200 flex flex-col">
-            <div class="p-4 border-b border-gray-200">
+        <div class="w-1/4 bg-white/70 backdrop-blur-sm border-r border-gray-200/60 flex flex-col">
+            <div class="p-5 border-b border-gray-200/60">
                 <div class="relative">
-                    <input type="text" id="search-input" placeholder="搜索联系人" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                    <button id="search-btn" class="absolute right-2 top-2 text-gray-500 hover:text-indigo-500">
+                    <input type="text" id="search-input" placeholder="搜索联系人" class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-400 bg-gray-50/50 text-sm transition-all duration-200">
+                    <button id="search-btn" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
@@ -36,13 +49,13 @@
                 </div>
             </div>
             
-            <div class="flex-1 overflow-y-auto p-2" id="friend-list">
+            <div class="flex-1 overflow-y-auto p-3" id="friend-list">
                 <!-- 联系人列表将通过JavaScript动态加载 -->
-                <div class="text-center text-gray-500 py-4">加载联系人列表中...</div>
+                <div class="text-center text-gray-400 py-8 text-sm">加载联系人列表中...</div>
             </div>
             
-            <div class="p-4 border-t border-gray-200">
-                <button id="add-friend-btn" class="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <div class="p-4 border-t border-gray-200/60">
+                <button id="add-friend-btn" class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900/50 transition-all duration-200 hover:shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
@@ -54,26 +67,33 @@
         <!-- 右侧聊天区域 -->
         <div class="flex-1 flex flex-col">
             <!-- 聊天头部 -->
-            <div class="p-4 border-b border-gray-200 bg-white shadow-sm flex justify-between items-center">
-                <h2 id="chat-title" class="text-lg font-medium">请选择一个聊天</h2>
+            <div class="p-5 border-b border-gray-200/60 bg-white/80 backdrop-blur-sm shadow-sm flex justify-between items-center">
+                <h2 id="chat-title" class="text-lg font-semibold text-gray-800">请选择一个聊天</h2>
                 <div id="chat-actions" class="hidden">
-                    <button id="delete-friend-btn" class="text-sm text-red-600 hover:text-red-800">
-                        删除好友
+                    <button id="view-profile-btn" class="text-sm text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition-all duration-200">
+                        查看资料
                     </button>
                 </div>
             </div>
             
             <!-- 聊天消息区域 -->
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 bg-gray-50">
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-gray-50/50 to-white/50">
                 <div class="flex items-center justify-center h-full">
-                    <p class="text-gray-500">选择一个联系人开始聊天</p>
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-400 text-sm">选择一个联系人开始聊天</p>
+                    </div>
                 </div>
             </div>
             
             <!-- 聊天输入区域 -->
-            <div id="chat-input-area" class="p-4 border-t border-gray-200 bg-white hidden">
+            <div id="chat-input-area" class="p-5 border-t border-gray-200/60 bg-white/80 backdrop-blur-sm hidden">
                 <!-- 表情选择器 -->
-                <div id="emoji-picker" class="hidden absolute bottom-20 left-4 w-80 p-4 border border-gray-200 rounded-lg bg-white shadow-lg max-h-48 overflow-y-auto z-10">
+                <div id="emoji-picker" class="hidden absolute bottom-24 left-6 w-80 p-4 border border-gray-200/60 rounded-2xl bg-white/95 backdrop-blur-md shadow-xl max-h-48 overflow-y-auto z-10">
                     <div class="grid grid-cols-8 gap-2">
                         <!-- 表情将通过JavaScript动态生成 -->
                     </div>
@@ -83,74 +103,75 @@
                 <input type="file" id="file-input" class="hidden" accept="*/*">
                 <input type="file" id="image-input" class="hidden" accept="image/*">
                 
-                <div class="relative h-20">
-                    <!-- 左侧功能按钮 -->
-                    <div class="absolute left-0 top-0 flex flex-col justify-center h-full space-y-1">
-                        <button type="button" id="emoji-btn" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-indigo-500 hover:bg-gray-100 rounded-lg transition-colors">
-                            😊
-                        </button>
-                        <button type="button" id="image-btn" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-indigo-500 hover:bg-gray-100 rounded-lg transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </button>
-                        <button type="button" id="file-btn" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-indigo-500 hover:bg-gray-100 rounded-lg transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <!-- 主输入区域 -->
-                    <form id="message-form" class="h-full">
-                        <div class="ml-12 mr-16 h-full relative">
-                            <textarea id="message-input" placeholder="输入消息..." class="w-full h-full resize-none border-none outline-none bg-gray-50 rounded-lg px-4 py-3 text-sm" rows="3"></textarea>
+                <div class="relative">
+                    <!-- 输入框容器 -->
+                    <div class="bg-gray-50/80 rounded-2xl border border-gray-200/60 p-3 flex items-center space-x-3">
+                        <!-- 左侧功能按钮 -->
+                        <div class="flex space-x-2 flex-shrink-0">
+                            <button type="button" id="emoji-btn" class="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-white/80 rounded-xl transition-all duration-200 text-lg">
+                                😊
+                            </button>
+                            <button type="button" id="image-btn" class="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-white/80 rounded-xl transition-all duration-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </button>
+                            <button type="button" id="file-btn" class="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-white/80 rounded-xl transition-all duration-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                </svg>
+                            </button>
                         </div>
                         
-                        <!-- 发送按钮 -->
-                        <button type="submit" class="absolute bottom-2 right-2 w-12 h-8 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center justify-center transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                            </svg>
-                        </button>
-                    </form>
+                        <!-- 主输入区域 -->
+                        <form id="message-form" class="flex-1 flex items-center space-x-3 min-h-[2.5rem]">
+                            <textarea id="message-input" placeholder="输入消息..." class="flex-1 resize-none border-none outline-none bg-transparent text-sm placeholder-gray-400 max-h-20 min-h-[2.5rem] py-2 leading-relaxed" rows="1"></textarea>
+                            
+                            <!-- 发送按钮 -->
+                            <button type="submit" class="w-10 h-10 bg-gray-900 hover:bg-gray-800 text-white rounded-xl flex items-center justify-center transition-all duration-200 hover:shadow-md flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- 添加好友模态框 -->
-    <div id="add-friend-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-medium">添加好友</h3>
-                <button id="close-add-friend-modal" class="text-gray-500 hover:text-gray-700">
+    <div id="add-friend-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50">
+        <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-md border border-gray-200/50">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-900">添加好友</h3>
+                <button id="close-add-friend-modal" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
             
-            <div id="add-friend-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <div id="add-friend-error" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl relative mb-4">
                 <span id="add-friend-error-text"></span>
             </div>
             
-            <div id="add-friend-success" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+            <div id="add-friend-success" class="hidden bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl relative mb-4">
                 <span id="add-friend-success-text"></span>
             </div>
             
             <form id="add-friend-form">
-                <div class="mb-4">
-                    <label for="friend-account" class="block text-sm font-medium text-gray-700 mb-1">好友账号</label>
-                    <input type="text" id="friend-account" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <div class="mb-6">
+                    <label for="friend-account" class="block text-sm font-medium text-gray-700 mb-2">好友账号</label>
+                    <input type="text" id="friend-account" class="w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
                 </div>
                 
-                <div id="search-result" class="mb-4 hidden">
-                    <div class="p-3 border border-gray-200 rounded-md">
+                <div id="search-result" class="mb-6 hidden">
+                    <div class="p-4 border border-gray-200 rounded-xl bg-gray-50/50">
                         <div class="flex items-center">
-                            <img id="result-avatar" src="https://via.placeholder.com/40" alt="头像" class="w-10 h-10 rounded-full mr-3">
+                            <img id="result-avatar" src="https://via.placeholder.com/40" alt="头像" class="w-12 h-12 rounded-full mr-4 ring-2 ring-white shadow-sm">
                             <div>
-                                <p id="result-nickname" class="font-medium"></p>
+                                <p id="result-nickname" class="font-medium text-gray-900"></p>
                                 <p id="result-account" class="text-sm text-gray-500"></p>
                             </div>
                         </div>
@@ -158,10 +179,10 @@
                 </div>
                 
                 <div class="flex justify-end space-x-3">
-                    <button type="button" id="search-friend-btn" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="button" id="search-friend-btn" class="px-6 py-3 border border-gray-200 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900/20 transition-all duration-200">
                         搜索
                     </button>
-                    <button type="button" id="confirm-add-friend-btn" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 hidden">
+                    <button type="button" id="confirm-add-friend-btn" class="px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900/50 transition-all duration-200 hover:shadow-md hidden">
                         添加
                     </button>
                 </div>
@@ -186,41 +207,82 @@
             let socket = null;
             let friends = [];
             
-            // DOM元素
-            const userNickname = document.getElementById('user-nickname');
-            const userAvatar = document.getElementById('user-avatar');
-            const logoutBtn = document.getElementById('logout-btn');
-            const friendList = document.getElementById('friend-list');
-            const chatTitle = document.getElementById('chat-title');
-            const chatMessages = document.getElementById('chat-messages');
-            const chatInputArea = document.getElementById('chat-input-area');
-            const messageForm = document.getElementById('message-form');
-            const messageInput = document.getElementById('message-input');
-            const addFriendBtn = document.getElementById('add-friend-btn');
-            const addFriendModal = document.getElementById('add-friend-modal');
-            const closeAddFriendModal = document.getElementById('close-add-friend-modal');
-            const addFriendForm = document.getElementById('add-friend-form');
-            const friendAccount = document.getElementById('friend-account');
-            const searchFriendBtn = document.getElementById('search-friend-btn');
-            const searchResult = document.getElementById('search-result');
-            const resultAvatar = document.getElementById('result-avatar');
-            const resultNickname = document.getElementById('result-nickname');
-            const resultAccount = document.getElementById('result-account');
-            const confirmAddFriendBtn = document.getElementById('confirm-add-friend-btn');
-            const addFriendError = document.getElementById('add-friend-error');
-            const addFriendErrorText = document.getElementById('add-friend-error-text');
-            const addFriendSuccess = document.getElementById('add-friend-success');
-            const addFriendSuccessText = document.getElementById('add-friend-success-text');
-            const chatActions = document.getElementById('chat-actions');
-            const deleteFriendBtn = document.getElementById('delete-friend-btn');
-            const searchInput = document.getElementById('search-input');
-            const searchBtn = document.getElementById('search-btn');
-            const emojiBtn = document.getElementById('emoji-btn');
-            const emojiPicker = document.getElementById('emoji-picker');
-            const imageBtn = document.getElementById('image-btn');
-            const fileBtn = document.getElementById('file-btn');
-            const imageInput = document.getElementById('image-input');
-            const fileInput = document.getElementById('file-input');
+            // DOM元素缓存
+            const elements = {
+                // 用户相关
+                userNickname: document.getElementById('user-nickname'),
+                userAvatar: document.getElementById('user-avatar'),
+                userCenterBtn: document.getElementById('user-center-btn'),
+                logoutBtn: document.getElementById('logout-btn'),
+                
+                // 聊天相关
+                friendList: document.getElementById('friend-list'),
+                chatTitle: document.getElementById('chat-title'),
+                chatMessages: document.getElementById('chat-messages'),
+                chatInputArea: document.getElementById('chat-input-area'),
+                messageForm: document.getElementById('message-form'),
+                messageInput: document.getElementById('message-input'),
+                chatActions: document.getElementById('chat-actions'),
+                viewProfileBtn: document.getElementById('view-profile-btn'),
+                
+                // 搜索相关
+                searchInput: document.getElementById('search-input'),
+                searchBtn: document.getElementById('search-btn'),
+                
+                // 添加好友相关
+                addFriendBtn: document.getElementById('add-friend-btn'),
+                addFriendModal: document.getElementById('add-friend-modal'),
+                closeAddFriendModal: document.getElementById('close-add-friend-modal'),
+                addFriendForm: document.getElementById('add-friend-form'),
+                friendAccount: document.getElementById('friend-account'),
+                searchFriendBtn: document.getElementById('search-friend-btn'),
+                searchResult: document.getElementById('search-result'),
+                resultAvatar: document.getElementById('result-avatar'),
+                resultNickname: document.getElementById('result-nickname'),
+                resultAccount: document.getElementById('result-account'),
+                confirmAddFriendBtn: document.getElementById('confirm-add-friend-btn'),
+                addFriendError: document.getElementById('add-friend-error'),
+                addFriendErrorText: document.getElementById('add-friend-error-text'),
+                addFriendSuccess: document.getElementById('add-friend-success'),
+                addFriendSuccessText: document.getElementById('add-friend-success-text'),
+                
+                // 用户中心相关
+                userCenterModal: document.getElementById('user-center-modal'),
+                userCenterPanel: document.getElementById('user-center-panel'),
+                userCenterBackdrop: document.getElementById('user-center-backdrop'),
+                closeUserCenterBtn: document.getElementById('close-user-center-btn'),
+                profileAvatar: document.getElementById('profile-avatar'),
+                profileNickname: document.getElementById('profile-nickname'),
+                profileAccount: document.getElementById('profile-account'),
+                profileEmail: document.getElementById('profile-email'),
+                profileNicknameDisplay: document.getElementById('profile-nickname-display'),
+                profileAccountDisplay: document.getElementById('profile-account-display'),
+                profileEmailDisplay: document.getElementById('profile-email-display'),
+                profileViewMode: document.getElementById('profile-view-mode'),
+                profileForm: document.getElementById('profile-form'),
+                editProfileBtn: document.getElementById('edit-profile-btn'),
+                cancelEditBtn: document.getElementById('cancel-edit-btn'),
+                changePasswordBtn: document.getElementById('change-password-btn'),
+                
+                // 查看资料相关
+                profileModal: document.getElementById('profile-modal'),
+                profilePanel: document.getElementById('profile-panel'),
+                profileBackdrop: document.getElementById('profile-backdrop'),
+                closeProfileBtn: document.getElementById('close-profile-btn'),
+                friendProfileAvatar: document.getElementById('friend-profile-avatar'),
+                friendProfileNickname: document.getElementById('friend-profile-nickname'),
+                friendProfileAccount: document.getElementById('friend-profile-account'),
+                friendProfileEmail: document.getElementById('friend-profile-email'),
+                deleteFriendBtn: document.getElementById('delete-friend-btn'),
+                
+                // 消息输入相关
+                emojiBtn: document.getElementById('emoji-btn'),
+                emojiPicker: document.getElementById('emoji-picker'),
+                imageBtn: document.getElementById('image-btn'),
+                fileBtn: document.getElementById('file-btn'),
+                imageInput: document.getElementById('image-input'),
+                fileInput: document.getElementById('file-input')
+            };
             
             // 表情数据
             const emojis = [
@@ -259,9 +321,9 @@
                     
                     if (data.code === 111) { // 成功状态码
                         currentUser = data.data;
-                        userNickname.textContent = currentUser.nickname || currentUser.account;
+                        elements.userNickname.textContent = currentUser.nickname || currentUser.account;
                         if (currentUser.avatar) {
-                            userAvatar.src = currentUser.avatar;
+                            elements.userAvatar.src = currentUser.avatar;
                         }
                         
                         // 获取好友列表
@@ -294,7 +356,7 @@
                     const data = await response.json();
                     
                     // 清空好友列表
-                    friendList.innerHTML = '';
+                    elements.friendList.innerHTML = '';
                     
                     if (data.code === 111) { // 成功状态码
                         const chatlist = data.data.chatlist;
@@ -303,6 +365,7 @@
                         friends = chatlist.map(contact => {
                             return {
                                 nickname: contact.name,
+                                account: contact.account, // 用户账号，用于查询详细信息
                                 room_id: contact.room_id,
                                 type: contact.type, // 1私聊 2群聊
                                 last_message: '',
@@ -317,16 +380,16 @@
                         renderFriendList(friends);
                     } else {
                         console.error('获取联系人列表失败:', data.msg);
-                        friendList.innerHTML = '<div class="text-center text-gray-500 py-4">获取联系人列表失败，请刷新重试</div>';
+                        elements.friendList.innerHTML = '<div class="text-center text-gray-500 py-4">获取联系人列表失败，请刷新重试</div>';
                     }
                 } catch (error) {
                     console.error('获取联系人列表出错:', error);
-                    friendList.innerHTML = '<div class="text-center text-gray-500 py-4">网络错误，请稍后重试</div>';
+                    elements.friendList.innerHTML = '<div class="text-center text-gray-500 py-4">网络错误，请稍后重试</div>';
                 }
                 
                 // 如果好友列表为空，显示提示信息
                 if (friends.length === 0) {
-                    friendList.innerHTML = '<div class="text-center text-gray-500 py-4">暂无联系人，请添加好友</div>';
+                    elements.friendList.innerHTML = '<div class="text-center text-gray-500 py-4">暂无联系人，请添加好友</div>';
                 }
             }
             
@@ -377,7 +440,7 @@
                         currentRoomMessages.push(message);
                         
                         // 滚动到底部
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                        elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
                     }
                     
                     // 更新好友列表中的最新消息
@@ -457,7 +520,7 @@
                     </div>
                 `;
                 
-                chatMessages.appendChild(separatorElement);
+                elements.chatMessages.appendChild(separatorElement);
             }
             
             // 聊天记录分页变量
@@ -497,7 +560,7 @@
                                 加载更多消息...
                             </div>
                         `;
-                        chatMessages.insertBefore(loadingIndicator, chatMessages.firstChild);
+                        elements.chatMessages.insertBefore(loadingIndicator, elements.chatMessages.firstChild);
                     }
                     
                     const response = await fetch(`/user/history?room_id=${roomId}&page_index=${page}&page_size=${pageSize}`, {
@@ -521,7 +584,7 @@
                         
                         // 如果没有消息，且是第一页，显示暂无聊天记录
                         if (messages.length === 0 && page === 1 && !append) {
-                            chatMessages.innerHTML = '<div class="flex justify-center my-4"><p class="text-gray-500">暂无聊天记录</p></div>';
+                            elements.chatMessages.innerHTML = '<div class="flex justify-center my-4"><p class="text-gray-500">暂无聊天记录</p></div>';
                             hasMoreMessages = false;
                         } else if (messages.length === 0) {
                             // 如果是其他页且没有消息，说明没有更多消息了
@@ -535,19 +598,19 @@
                                     没有更多消息了
                                 </div>
                             `;
-                            chatMessages.insertBefore(noMoreMessagesIndicator, chatMessages.firstChild);
+                            elements.chatMessages.insertBefore(noMoreMessagesIndicator, elements.chatMessages.firstChild);
                         } else {
                             // 按时间顺序显示消息
                             messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
                             
                             // 保存当前滚动位置和高度
-                            const scrollPos = chatMessages.scrollTop;
-                            const oldHeight = chatMessages.scrollHeight;
+                            const scrollPos = elements.chatMessages.scrollTop;
+                            const oldHeight = elements.chatMessages.scrollHeight;
                             
                             // 合并消息到当前房间消息列表
                             if (page === 1 && !append) {
                                 // 如果是第一页且不是追加模式，清空聊天消息区域
-                                chatMessages.innerHTML = '';
+                                elements.chatMessages.innerHTML = '';
                                 currentRoomMessages = messages;
                             } else {
                                 // 将新消息添加到数组开头
@@ -559,7 +622,7 @@
                                 // 如果是加载更多或追加模式
                                 if (page > 1) {
                                     // 清空聊天区域
-                                    chatMessages.innerHTML = '';
+                                    elements.chatMessages.innerHTML = '';
                                     
                                     // 重新渲染所有消息
                                     let currentDate = null;
@@ -579,11 +642,11 @@
                                     });
                                     
                                     // 计算新增内容的高度，并调整滚动位置
-                                    const newHeight = chatMessages.scrollHeight;
-                                    chatMessages.scrollTop = scrollPos + (newHeight - oldHeight);
+                                    const newHeight = elements.chatMessages.scrollHeight;
+                                    elements.chatMessages.scrollTop = scrollPos + (newHeight - oldHeight);
                                 } else {
                                     // 如果是追加模式但不是加载更多，滚动到底部
-                                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                                    elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
                                 }
                             } else {
                                 // 如果是第一页且不是追加模式，直接渲染
@@ -604,7 +667,7 @@
                                 });
                                 
                                 // 滚动到底部
-                                chatMessages.scrollTop = chatMessages.scrollHeight;
+                                elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
                             }
                             
                             // 更新当前页码
@@ -682,38 +745,38 @@
                 
                 messageElement.innerHTML = `
                     <div class="${isCurrentUser ? 'order-2' : 'order-1'} flex-shrink-0">
-                        <img src="${isCurrentUser ? (currentUser.avatar || 'https://via.placeholder.com/32') : (currentChatUser?.avatar || 'https://via.placeholder.com/32')}" alt="头像" class="w-8 h-8 rounded-full">
+                        <img src="${isCurrentUser ? (currentUser.avatar || 'https://via.placeholder.com/32') : (currentChatUser?.avatar || 'https://via.placeholder.com/32')}" alt="头像" class="w-8 h-8 rounded-full ring-2 ring-white shadow-sm">
                     </div>
                     <div class="${isCurrentUser ? 'order-1' : 'order-2'} max-w-xs mx-2">
-                        <div class="${isCurrentUser ? 'text-right' : 'text-left'} text-xs text-gray-600 mb-1">${userName}</div>
-                        <div class="${isCurrentUser ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-800'} rounded-lg ${messageType === 'emoji' ? 'px-2 py-1' : messageType === 'image' || messageType === 'file' ? 'p-2' : 'px-4 py-2'} shadow">
+                        <div class="${isCurrentUser ? 'text-right' : 'text-left'} text-xs text-gray-500 mb-1">${userName}</div>
+                        <div class="${isCurrentUser ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200/60 text-gray-800'} rounded-xl ${messageType === 'emoji' ? 'px-3 py-2' : messageType === 'image' || messageType === 'file' ? 'p-3' : 'px-4 py-3'} shadow-sm">
                             ${messageContent}
                         </div>
-                        <div class="text-xs text-gray-500 ${isCurrentUser ? 'text-right' : 'text-left'} mt-1">
+                        <div class="text-xs text-gray-400 ${isCurrentUser ? 'text-right' : 'text-left'} mt-1">
                             <span>${createdTime}</span>
                         </div>
                     </div>
                 `;
                 
-                chatMessages.appendChild(messageElement);
+                elements.chatMessages.appendChild(messageElement);
                 
                 // 滚动到底部
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
             }
             
             // 添加滚动事件监听，上滑加载更多消息
             function setupScrollListener() {
                 // 移除之前的事件监听器（如果有）
-                chatMessages.removeEventListener('scroll', handleScroll);
+                elements.chatMessages.removeEventListener('scroll', handleScroll);
                 
                 // 添加新的事件监听器
-                chatMessages.addEventListener('scroll', handleScroll);
+                elements.chatMessages.addEventListener('scroll', handleScroll);
             }
             
             // 处理滚动事件
             function handleScroll() {
                 // 如果滚动到顶部附近（距离顶部小于50像素），加载更多消息
-                if (chatMessages.scrollTop < 50 && !isLoadingMessages && hasMoreMessages && currentRoomId) {
+                if (elements.chatMessages.scrollTop < 50 && !isLoadingMessages && hasMoreMessages && currentRoomId) {
                     // 加载下一页消息
                     loadChatMessages(currentRoomId, currentPage + 1, 20, true);
                 }
@@ -745,17 +808,17 @@
                 
                 // 更新聊天标题，根据类型显示不同的标题
                 const chatType = contact.type === 1 ? '私聊' : '群聊';
-                chatTitle.innerHTML = `${contact.nickname} <span class="text-sm text-gray-500">(${chatType})</span>`;
+                elements.chatTitle.innerHTML = `${contact.nickname} <span class="text-sm text-gray-500">(${chatType})</span>`;
                 
                 // 显示聊天输入区域
-                chatInputArea.classList.remove('hidden');
+                elements.chatInputArea.classList.remove('hidden');
                 
-                // 显示聊天操作区域，只有私聊才显示删除好友按钮
-                chatActions.classList.remove('hidden');
+                // 显示聊天操作区域，只有私聊才显示查看资料按钮
+                elements.chatActions.classList.remove('hidden');
                 if (contact.type === 1) {
-                    deleteFriendBtn.classList.remove('hidden');
+                    elements.viewProfileBtn.classList.remove('hidden');
                 } else {
-                    deleteFriendBtn.classList.add('hidden');
+                    elements.viewProfileBtn.classList.add('hidden');
                 }
                 
                 // 加载聊天记录
@@ -849,10 +912,244 @@
                 }
             }
             
+            // 用户中心相关函数
+            function openUserCenter() {
+                // 显示模态框
+                elements.userCenterModal.classList.remove('hidden');
+                // 触发滑入动画
+                setTimeout(() => {
+                    elements.userCenterPanel.classList.remove('translate-x-full');
+                }, 10);
+                
+                // 加载用户信息
+                loadUserProfile();
+            }
+            
+            function closeUserCenter() {
+                // 触发滑出动画
+                elements.userCenterPanel.classList.add('translate-x-full');
+                // 隐藏模态框
+                setTimeout(() => {
+                    elements.userCenterModal.classList.add('hidden');
+                }, 300);
+            }
+            
+            function openProfile() {
+                // 显示模态框
+                elements.profileModal.classList.remove('hidden');
+                // 触发滑入动画
+                setTimeout(() => {
+                    elements.profilePanel.classList.remove('translate-x-full');
+                }, 10);
+                
+                // 加载好友信息
+                loadFriendProfile();
+            }
+            
+            function closeProfile() {
+                // 触发滑出动画
+                elements.profilePanel.classList.add('translate-x-full');
+                // 隐藏模态框
+                setTimeout(() => {
+                    elements.profileModal.classList.add('hidden');
+                }, 300);
+            }
+            
+            // 显示只读模式
+            function showViewMode() {
+                elements.profileViewMode.classList.remove('hidden');
+                elements.profileForm.classList.add('hidden');
+            }
+            
+            // 显示编辑模式
+            function showEditMode() {
+                elements.profileViewMode.classList.add('hidden');
+                elements.profileForm.classList.remove('hidden');
+            }
+            
+            // 加载用户资料
+            async function loadUserProfile() {
+                try {
+                    const response = await fetch('/user/detail', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': token
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.code === 111) {
+                        const user = data.data;
+                        elements.profileAvatar.src = user.avatar || 'https://via.placeholder.com/80';
+                        
+                        // 更新显示模式
+                        elements.profileNicknameDisplay.textContent = user.nickname || '';
+                        elements.profileAccountDisplay.textContent = user.account || '';
+                        elements.profileEmailDisplay.textContent = user.email || '';
+                        
+                        // 更新编辑模式
+                        elements.profileNickname.value = user.nickname || '';
+                        elements.profileAccount.value = user.account || '';
+                        elements.profileEmail.value = user.email || '';
+
+                    } else {
+                        alert('获取用户信息失败');
+                    }
+                } catch (error) {
+                    console.error('获取用户信息出错:', error);
+                    alert('网络错误，请稍后重试');
+                }
+            }
+            
+            // 加载好友资料
+            async function loadFriendProfile() {
+                if (!currentChatUser) return;
+                
+                try {
+                    // 调用/user/query接口获取好友详细信息
+                    if (!currentChatUser.account) {
+                        console.warn('当前聊天用户缺少account信息');
+                        // 使用备用信息
+                        elements.friendProfileAvatar.src = currentChatUser.avatar || 'https://via.placeholder.com/80';
+                        elements.friendProfileNickname.textContent = currentChatUser.nickname || '';
+                        elements.friendProfileAccount.textContent = currentChatUser.account || '';
+                        elements.friendProfileEmail.textContent = currentChatUser.email || '';
+
+                        return;
+                    }
+                    
+                    const response = await fetch(`/user/query?account=${encodeURIComponent(currentChatUser.account)}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': token
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.code === 111) { // 成功状态码
+                        const userInfo = data.data;
+                        elements.friendProfileAvatar.src = userInfo.avatar || 'https://via.placeholder.com/80';
+                        elements.friendProfileNickname.textContent = userInfo.nickname || '';
+                        elements.friendProfileAccount.textContent = userInfo.account || '';
+                        elements.friendProfileEmail.textContent = userInfo.email || '';
+
+                    } else {
+                        // 如果接口调用失败，使用当前聊天用户的信息作为备用
+                        console.warn('获取好友详细信息失败:', data.msg);
+                        elements.friendProfileAvatar.src = currentChatUser.avatar || 'https://via.placeholder.com/80';
+                        elements.friendProfileNickname.textContent = currentChatUser.nickname || '';
+                        elements.friendProfileAccount.textContent = currentChatUser.account || '';
+                        elements.friendProfileEmail.textContent = currentChatUser.email || '';
+
+                    }
+                } catch (error) {
+                    console.error('获取好友信息出错:', error);
+                    // 网络错误时使用当前聊天用户的信息作为备用
+                    elements.friendProfileAvatar.src = currentChatUser.avatar || 'https://via.placeholder.com/80';
+                    elements.friendProfileNickname.textContent = currentChatUser.nickname || '';
+                    elements.friendProfileAccount.textContent = currentChatUser.account || '';
+                    elements.friendProfileEmail.textContent = currentChatUser.email || '';
+                    
+                    alert('网络错误，请稍后重试');
+                }
+            }
+            
             // 事件监听
             
+            // 用户中心按钮
+            elements.userCenterBtn.addEventListener('click', function() {
+                openUserCenter();
+                // 确保打开时显示只读模式
+                showViewMode();
+            });
+            
+            // 编辑资料按钮点击事件
+            elements.editProfileBtn.addEventListener('click', function() {
+                showEditMode();
+            });
+            
+            // 取消编辑按钮点击事件
+            elements.cancelEditBtn.addEventListener('click', function() {
+                showViewMode();
+            });
+            
+            // 用户中心关闭按钮
+            elements.closeUserCenterBtn.addEventListener('click', closeUserCenter);
+            
+            // 用户中心背景遮罩
+            elements.userCenterBackdrop.addEventListener('click', closeUserCenter);
+            
+            // 查看资料按钮
+            elements.viewProfileBtn.addEventListener('click', openProfile);
+            
+            // 查看资料关闭按钮
+            elements.closeProfileBtn.addEventListener('click', closeProfile);
+            
+            // 查看资料背景遮罩
+            elements.profileBackdrop.addEventListener('click', closeProfile);
+            
+            // 用户资料表单提交
+            elements.profileForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                try {
+                    // 这里可以添加更新用户信息的API调用
+                    alert('资料更新功能待实现');
+                    
+                    // 更新成功后切换回只读模式
+                    showViewMode();
+                    // 重新加载用户资料以显示最新数据
+                    loadUserProfile();
+                } catch (error) {
+                    console.error('更新用户信息出错:', error);
+                    alert('更新失败，请稍后重试');
+                }
+            });
+            
+            // 修改密码按钮
+            elements.changePasswordBtn.addEventListener('click', function() {
+                alert('修改密码功能待实现');
+            });
+            
+            // 删除好友按钮（在查看资料窗口中）
+            elements.deleteFriendBtn.addEventListener('click', async function() {
+                if (!currentChatUser || !currentRoomId) return;
+                
+                // 只有私聊才能删除好友
+                if (currentChatUser.type !== 1) {
+                    alert('只能删除私聊联系人');
+                    return;
+                }
+                
+                if (confirm(`确定要删除好友 ${currentChatUser.nickname} 吗？`)) {
+                    try {
+                        await deleteFriend(currentRoomId);
+                        
+                        // 关闭资料窗口
+                        closeProfile();
+                        
+                        // 重新获取好友列表
+                        fetchFriends();
+                        
+                        // 重置聊天区域
+                        currentRoomId = null;
+                        currentChatUser = null;
+                        elements.chatTitle.textContent = '请选择一个聊天';
+                        elements.chatMessages.innerHTML = '<div class="flex items-center justify-center h-full"><p class="text-gray-500">选择一个联系人开始聊天</p></div>';
+                        elements.chatInputArea.classList.add('hidden');
+                        elements.chatActions.classList.add('hidden');
+                        
+                        alert('删除好友成功');
+                    } catch (error) {
+                        alert(error.message || '删除好友失败');
+                    }
+                }
+            });
+            
             // 退出登录
-            logoutBtn.addEventListener('click', function() {
+            elements.logoutBtn.addEventListener('click', function() {
                 // 关闭WebSocket连接
                 if (socket) {
                     socket.close();
@@ -866,10 +1163,10 @@
             });
             
             // 发送消息
-            messageForm.addEventListener('submit', function(e) {
+            elements.messageForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const message = messageInput.value.trim();
+                const message = elements.messageInput.value.trim();
                 if (!message) return;
                 
                 if (!currentRoomId) {
@@ -883,7 +1180,7 @@
                 
                 // 检查是否需要添加日期分隔线
                 let lastDateStr = null;
-                const dateElements = chatMessages.querySelectorAll('.date-separator');
+                const dateElements = elements.chatMessages.querySelectorAll('.date-separator');
                 if (dateElements.length > 0) {
                     const lastDateElement = dateElements[dateElements.length - 1];
                     lastDateStr = lastDateElement.getAttribute('data-date');
@@ -911,41 +1208,41 @@
                 currentRoomMessages.push(messageObj);
                 
                 // 清空输入框
-                messageInput.value = '';
+                elements.messageInput.value = '';
             });
             
             // 打开添加好友模态框
-            addFriendBtn.addEventListener('click', function() {
+            elements.addFriendBtn.addEventListener('click', function() {
                 // 重置表单
-                addFriendForm.reset();
-                searchResult.classList.add('hidden');
-                confirmAddFriendBtn.classList.add('hidden');
-                addFriendError.classList.add('hidden');
-                addFriendSuccess.classList.add('hidden');
+                elements.addFriendForm.reset();
+                elements.searchResult.classList.add('hidden');
+                elements.confirmAddFriendBtn.classList.add('hidden');
+                elements.addFriendError.classList.add('hidden');
+                elements.addFriendSuccess.classList.add('hidden');
                 
                 // 显示模态框
-                addFriendModal.classList.remove('hidden');
+                elements.addFriendModal.classList.remove('hidden');
             });
             
             // 关闭添加好友模态框
-            closeAddFriendModal.addEventListener('click', function() {
-                addFriendModal.classList.add('hidden');
+            elements.closeAddFriendModal.addEventListener('click', function() {
+                elements.addFriendModal.classList.add('hidden');
             });
             
             // 点击模态框外部关闭模态框
-            addFriendModal.addEventListener('click', function(e) {
-                if (e.target === addFriendModal) {
-                    addFriendModal.classList.add('hidden');
+            elements.addFriendModal.addEventListener('click', function(e) {
+                if (e.target === elements.addFriendModal) {
+                    elements.addFriendModal.classList.add('hidden');
                 }
             });
             
             // 搜索好友
-            searchFriendBtn.addEventListener('click', async function() {
-                const account = friendAccount.value.trim();
+            elements.searchFriendBtn.addEventListener('click', async function() {
+                const account = elements.friendAccount.value.trim();
                 if (!account) {
-                    addFriendErrorText.textContent = '请输入好友账号';
-                    addFriendError.classList.remove('hidden');
-                    addFriendSuccess.classList.add('hidden');
+                    elements.addFriendErrorText.textContent = '请输入好友账号';
+                    elements.addFriendError.classList.remove('hidden');
+                    elements.addFriendSuccess.classList.add('hidden');
                     return;
                 }
                 
@@ -953,99 +1250,69 @@
                     const user = await searchFriend(account);
                     
                     // 显示搜索结果
-                    resultNickname.textContent = user.nickname || user.account;
-                    resultAccount.textContent = user.account;
+                    elements.resultNickname.textContent = user.nickname || user.account;
+                    elements.resultAccount.textContent = user.account;
                     if (user.avatar) {
-                        resultAvatar.src = user.avatar;
+                        elements.resultAvatar.src = user.avatar;
                     }
                     
-                    searchResult.classList.remove('hidden');
+                    elements.searchResult.classList.remove('hidden');
                     
                     // 如果已经是好友，不显示添加按钮
                     if (user.is_friend) {
-                        addFriendErrorText.textContent = '该用户已经是您的好友';
-                        addFriendError.classList.remove('hidden');
-                        addFriendSuccess.classList.add('hidden');
-                        confirmAddFriendBtn.classList.add('hidden');
+                        elements.addFriendErrorText.textContent = '该用户已经是您的好友';
+                        elements.addFriendError.classList.remove('hidden');
+                        elements.addFriendSuccess.classList.add('hidden');
+                        elements.confirmAddFriendBtn.classList.add('hidden');
                     } else {
-                        addFriendError.classList.add('hidden');
-                        addFriendSuccess.classList.add('hidden');
-                        confirmAddFriendBtn.classList.remove('hidden');
+                        elements.addFriendError.classList.add('hidden');
+                        elements.addFriendSuccess.classList.add('hidden');
+                        elements.confirmAddFriendBtn.classList.remove('hidden');
                         
                         // 存储搜索到的用户信息
-                        confirmAddFriendBtn.dataset.account = user.account;
+                        elements.confirmAddFriendBtn.dataset.account = user.account;
                     }
                 } catch (error) {
-                    addFriendErrorText.textContent = error.message || '搜索好友失败';
-                    addFriendError.classList.remove('hidden');
-                    addFriendSuccess.classList.add('hidden');
-                    searchResult.classList.add('hidden');
-                    confirmAddFriendBtn.classList.add('hidden');
+                    elements.addFriendErrorText.textContent = error.message || '搜索好友失败';
+                    elements.addFriendError.classList.remove('hidden');
+                    elements.addFriendSuccess.classList.add('hidden');
+                    elements.searchResult.classList.add('hidden');
+                    elements.confirmAddFriendBtn.classList.add('hidden');
                 }
             });
             
             // 确认添加好友
-            confirmAddFriendBtn.addEventListener('click', async function() {
-                const account = confirmAddFriendBtn.dataset.account;
+            elements.confirmAddFriendBtn.addEventListener('click', async function() {
+                const account = elements.confirmAddFriendBtn.dataset.account;
                 if (!account) return;
                 
                 try {
                     await addFriend(account);
                     
                     // 显示成功信息
-                    addFriendSuccessText.textContent = '添加好友成功';
-                    addFriendSuccess.classList.remove('hidden');
-                    addFriendError.classList.add('hidden');
+                    elements.addFriendSuccessText.textContent = '添加好友成功';
+                    elements.addFriendSuccess.classList.remove('hidden');
+                    elements.addFriendError.classList.add('hidden');
                     
                     // 重新获取好友列表
                     fetchFriends();
                     
                     // 3秒后关闭模态框
                     setTimeout(() => {
-                        addFriendModal.classList.add('hidden');
+                        elements.addFriendModal.classList.add('hidden');
                     }, 3000);
                 } catch (error) {
-                    addFriendErrorText.textContent = error.message || '添加好友失败';
-                    addFriendError.classList.remove('hidden');
-                    addFriendSuccess.classList.add('hidden');
+                    elements.addFriendErrorText.textContent = error.message || '添加好友失败';
+                    elements.addFriendError.classList.remove('hidden');
+                    elements.addFriendSuccess.classList.add('hidden');
                 }
             });
             
-            // 删除好友
-            deleteFriendBtn.addEventListener('click', async function() {
-                if (!currentChatUser || !currentRoomId) return;
-                
-                // 只有私聊才能删除好友
-                if (currentChatUser.type !== 1) {
-                    alert('只能删除私聊联系人');
-                    return;
-                }
-                
-                if (confirm(`确定要删除好友 ${currentChatUser.nickname} 吗？`)) {
-                    try {
-                        await deleteFriend(currentRoomId);
-                        
-                        // 重新获取好友列表
-                        fetchFriends();
-                        
-                        // 重置聊天区域
-                        currentRoomId = null;
-                        currentChatUser = null;
-                        chatTitle.textContent = '请选择一个聊天';
-                        chatMessages.innerHTML = '<div class="flex items-center justify-center h-full"><p class="text-gray-500">选择一个联系人开始聊天</p></div>';
-                        chatInputArea.classList.add('hidden');
-                        chatActions.classList.add('hidden');
-                        
-                        alert('删除好友成功');
-                    } catch (error) {
-                        alert(error.message || '删除好友失败');
-                    }
-                }
-            });
+
             
             // 搜索联系人（本地搜索）
-            searchBtn.addEventListener('click', function() {
-                const keyword = searchInput.value.trim().toLowerCase();
+            elements.searchBtn.addEventListener('click', function() {
+                const keyword = elements.searchInput.value.trim().toLowerCase();
                 if (!keyword) {
                     // 显示所有联系人
                     renderFriendList(friends);
@@ -1062,14 +1329,14 @@
             });
             
             // 搜索框回车事件
-            searchInput.addEventListener('keyup', function(e) {
+            elements.searchInput.addEventListener('keyup', function(e) {
                 if (e.key === 'Enter') {
-                    searchBtn.click();
+                    elements.searchBtn.click();
                 }
             });
             
             // 搜索框清空事件
-            searchInput.addEventListener('input', function() {
+            elements.searchInput.addEventListener('input', function() {
                 if (this.value.trim() === '') {
                     renderFriendList(friends);
                 }
@@ -1078,10 +1345,10 @@
             // 渲染好友列表
             function renderFriendList(friendsList) {
                 // 清空好友列表
-                friendList.innerHTML = '';
+                elements.friendList.innerHTML = '';
                 
                 if (friendsList.length === 0) {
-                    friendList.innerHTML = '<div class="text-center text-gray-500 py-4">未找到匹配的联系人</div>';
+                    elements.friendList.innerHTML = '<div class="text-center text-gray-500 py-4">未找到匹配的联系人</div>';
                     return;
                 }
                 
@@ -1090,31 +1357,35 @@
                     const friendElement = document.createElement('div');
                     // 如果有新消息，添加特殊样式
                     const hasNewMessage = friend.has_new_message && friend.room_id !== currentRoomId;
-                    friendElement.className = `p-2 hover:bg-gray-100 rounded-md cursor-pointer relative ${hasNewMessage ? 'bg-blue-50 border-l-4 border-blue-500' : ''}`;
+                    friendElement.className = `p-3 hover:bg-white/60 rounded-xl cursor-pointer relative transition-all duration-200 mb-2 ${hasNewMessage ? 'bg-blue-50/80 border border-blue-200/60 shadow-sm' : 'hover:shadow-sm'}`;
                     friendElement.dataset.roomId = friend.room_id;
                     friendElement.dataset.type = friend.type;
                     
                     // 根据类型显示不同的图标
                     const typeIcon = friend.type === 1 ? 
-                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>' : 
-                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" /></svg>';
+                        '<div class="w-2 h-2 bg-blue-400 rounded-full" title="私聊"></div>' : 
+                        '<div class="w-2 h-2 bg-green-400 rounded-full" title="群聊"></div>';
                     
                     // 新消息提示标识
                     const newMessageBadge = hasNewMessage && friend.new_message_count > 0 ? 
-                        `<span class="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">${friend.new_message_count > 99 ? '99+' : friend.new_message_count}</span>` : '';
+                        `<span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium shadow-sm">${friend.new_message_count > 99 ? '99+' : friend.new_message_count}</span>` : '';
                     
                     friendElement.innerHTML = `
                         <div class="flex items-center">
-                            <img src="${friend.avatar || 'https://via.placeholder.com/40'}" alt="头像" class="w-10 h-10 rounded-full mr-3">
-                            <div class="flex-1">
-                                <div class="flex items-center">
-                                    <p class="font-medium ${hasNewMessage ? 'text-blue-700' : ''}">${friend.nickname}</p>
-                                    <span class="ml-2" title="${friend.type === 1 ? '私聊' : '群聊'}">${typeIcon}</span>
-                                    ${hasNewMessage ? '<span class="ml-2 w-2 h-2 bg-red-500 rounded-full" title="有新消息"></span>' : ''}
+                            <div class="relative">
+                                <img src="${friend.avatar || 'https://via.placeholder.com/40'}" alt="头像" class="w-12 h-12 rounded-full ring-2 ring-white shadow-sm">
+                                ${hasNewMessage ? '<div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></div>' : ''}
+                            </div>
+                            <div class="flex-1 ml-3 min-w-0">
+                                <div class="flex items-center justify-between">
+                                    <p class="font-medium text-gray-900 truncate ${hasNewMessage ? 'text-blue-700' : ''}">${friend.nickname}</p>
+                                    <div class="flex items-center space-x-2">
+                                        ${typeIcon}
+                                    </div>
                                 </div>
-                                <div class="flex items-center text-sm ${hasNewMessage ? 'text-blue-600 font-medium' : 'text-gray-500'} truncate">
+                                <div class="flex items-center text-sm text-gray-500 truncate mt-1 ${hasNewMessage ? 'text-blue-600 font-medium' : ''}">
                                     ${getMessageTypeIcon(friend.last_message_type || 'text')}
-                                    <span class="ml-1">${friend.last_message || ''}</span>
+                                    <span class="ml-1 truncate">${friend.last_message || '暂无消息'}</span>
                                 </div>
                             </div>
                         </div>
@@ -1126,7 +1397,7 @@
                         openChat(friend.room_id, friend);
                     });
                     
-                    friendList.appendChild(friendElement);
+                    elements.friendList.appendChild(friendElement);
                 });
             }
             
@@ -1151,7 +1422,7 @@
             
             // 初始化表情选择器
             function initEmojiPicker() {
-                const emojiGrid = emojiPicker.querySelector('.grid');
+                const emojiGrid = elements.emojiPicker.querySelector('.grid');
                 emojiGrid.innerHTML = '';
                 
                 emojis.forEach(emoji => {
@@ -1163,7 +1434,7 @@
                         // 发送表情消息
                         sendEmojiMessage(emoji);
                         // 隐藏表情选择器
-                        emojiPicker.classList.add('hidden');
+                        elements.emojiPicker.classList.add('hidden');
                     });
                     emojiGrid.appendChild(emojiBtn);
                 });
@@ -1179,7 +1450,7 @@
                 const now = new Date();
                 
                 // 检查是否需要添加日期分隔线
-                const lastDateElements = chatMessages.querySelectorAll('.date-separator');
+                const lastDateElements = elements.chatMessages.querySelectorAll('.date-separator');
                 const lastDateStr = lastDateElements.length > 0 ? 
                     lastDateElements[lastDateElements.length - 1].textContent.trim() : null;
                 const todayStr = now.getFullYear() + '/' + 
@@ -1219,7 +1490,7 @@
                     const now = new Date();
                     
                     // 检查是否需要添加日期分隔线
-                    const lastDateElements = chatMessages.querySelectorAll('.date-separator');
+                    const lastDateElements = elements.chatMessages.querySelectorAll('.date-separator');
                     const lastDateStr = lastDateElements.length > 0 ? 
                         lastDateElements[lastDateElements.length - 1].textContent.trim() : null;
                     const todayStr = now.getFullYear() + '/' + 
@@ -1264,7 +1535,7 @@
                     const now = new Date();
                     
                     // 检查是否需要添加日期分隔线
-                    const lastDateElements = chatMessages.querySelectorAll('.date-separator');
+                    const lastDateElements = elements.chatMessages.querySelectorAll('.date-separator');
                     const lastDateStr = lastDateElements.length > 0 ? 
                         lastDateElements[lastDateElements.length - 1].textContent.trim() : null;
                     const todayStr = now.getFullYear() + '/' + 
@@ -1297,22 +1568,22 @@
             }
             
             // 表情按钮点击事件
-            emojiBtn.addEventListener('click', function() {
-                emojiPicker.classList.toggle('hidden');
+            elements.emojiBtn.addEventListener('click', function() {
+                elements.emojiPicker.classList.toggle('hidden');
             });
             
             // 图片按钮点击事件
-            imageBtn.addEventListener('click', function() {
-                imageInput.click();
+            elements.imageBtn.addEventListener('click', function() {
+                elements.imageInput.click();
             });
             
             // 文件按钮点击事件
-            fileBtn.addEventListener('click', function() {
-                fileInput.click();
+            elements.fileBtn.addEventListener('click', function() {
+                elements.fileInput.click();
             });
             
             // 图片文件选择事件
-            imageInput.addEventListener('change', function(e) {
+            elements.imageInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     // 检查文件大小（限制为5MB）
@@ -1327,7 +1598,7 @@
             });
             
             // 文件选择事件
-            fileInput.addEventListener('change', function(e) {
+            elements.fileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     // 检查文件大小（限制为10MB）
@@ -1342,17 +1613,17 @@
             });
             
             // 回车键发送消息
-            messageInput.addEventListener('keydown', function(e) {
+            elements.messageInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    messageForm.dispatchEvent(new Event('submit'));
+                    elements.messageForm.dispatchEvent(new Event('submit'));
                 }
             });
             
             // 点击其他地方隐藏表情选择器
             document.addEventListener('click', function(e) {
-                if (!emojiBtn.contains(e.target) && !emojiPicker.contains(e.target)) {
-                    emojiPicker.classList.add('hidden');
+                if (!elements.emojiBtn.contains(e.target) && !elements.emojiPicker.contains(e.target)) {
+                    elements.emojiPicker.classList.add('hidden');
                 }
             });
             
@@ -1361,5 +1632,155 @@
             fetchCurrentUser();
         });
     </script>
+    
+    <!-- 用户中心滑入窗口 -->
+    <div id="user-center-modal" class="fixed inset-0 z-50 hidden">
+        <!-- 背景遮罩 -->
+        <div id="user-center-backdrop" class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+        <!-- 滑入窗口 -->
+        <div id="user-center-panel" class="absolute right-0 top-0 h-full w-96 bg-white/95 backdrop-blur-md shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out border-l border-gray-200/50">
+            <!-- 头部 -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200/60 bg-gradient-to-r from-gray-50/80 to-white/80">
+                <h3 class="text-xl font-semibold text-gray-900">用户中心</h3>
+                <button id="close-user-center-btn" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100/80 p-2 rounded-xl transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <!-- 用户头像 -->
+                <div class="text-center mb-8">
+                    <div class="relative inline-block">
+                        <img id="profile-avatar" src="" alt="头像" class="w-24 h-24 rounded-full mx-auto mb-3 ring-4 ring-white shadow-lg">
+                        <div class="absolute inset-0 rounded-full bg-black/10 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <button id="change-avatar-btn" class="text-sm text-gray-600 hover:text-gray-800 font-medium transition-colors duration-200">更换头像</button>
+                </div>
+                
+                <!-- 用户信息显示/编辑区域 -->
+                <div class="space-y-6">
+                    <!-- 只读显示模式 -->
+                    <div id="profile-view-mode">
+                        <div class="mb-5">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">昵称</label>
+                            <div id="profile-nickname-display" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
+                        </div>
+                        
+                        <div class="mb-5">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">账号</label>
+                            <div id="profile-account-display" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
+                        </div>
+                        
+                        <div class="mb-8">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">邮箱</label>
+                            <div id="profile-email-display" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
+                        </div>
+                        
+                        <div class="flex space-x-3">
+                            <button type="button" id="edit-profile-btn" class="flex-1 bg-gray-900 text-white py-3 px-4 rounded-xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
+                                编辑资料
+                            </button>
+                            <button type="button" id="change-password-btn" class="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-200 font-medium border border-gray-200/60">
+                                修改密码
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 编辑模式 -->
+                    <form id="profile-form" class="space-y-5 hidden">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">昵称</label>
+                            <input type="text" id="profile-nickname" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-all duration-200">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">账号</label>
+                            <input type="text" id="profile-account" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-600" readonly>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">邮箱</label>
+                            <input type="email" id="profile-email" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-600" readonly>
+                        </div>
+                        
+                        <div class="flex space-x-3 pt-4">
+                            <button type="submit" class="flex-1 bg-gray-900 text-white py-3 px-4 rounded-xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
+                                保存修改
+                            </button>
+                            <button type="button" id="cancel-edit-btn" class="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-200 font-medium border border-gray-200/60">
+                                取消
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- 退出登录按钮 -->
+                <div class="mt-8 pt-6 border-t border-gray-200/60">
+                    <button id="logout-btn" class="w-full bg-red-500 text-white py-3 px-4 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
+                        退出登录
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 查看资料滑入窗口 -->
+    <div id="profile-modal" class="fixed inset-0 z-50 hidden">
+        <!-- 背景遮罩 -->
+        <div id="profile-backdrop" class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+        <!-- 滑入窗口 -->
+        <div id="profile-panel" class="absolute right-0 top-0 h-full w-96 bg-white/95 backdrop-blur-md shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out border-l border-gray-200/50">
+            <!-- 头部 -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200/60 bg-gradient-to-r from-gray-50/80 to-white/80">
+                <h3 class="text-xl font-semibold text-gray-900">用户资料</h3>
+                <button id="close-profile-btn" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100/80 p-2 rounded-xl transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <!-- 用户头像 -->
+                <div class="text-center mb-8">
+                    <img id="friend-profile-avatar" src="" alt="头像" class="w-24 h-24 rounded-full mx-auto ring-4 ring-white shadow-lg">
+                </div>
+                
+                <!-- 用户信息显示 -->
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">昵称</label>
+                        <div id="friend-profile-nickname" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">账号</label>
+                        <div id="friend-profile-account" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">邮箱</label>
+                        <div id="friend-profile-email" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
+                    </div>
+                    
+                    <!-- 删除好友按钮 -->
+                    <div class="mt-8 pt-6 border-t border-gray-200/60">
+                        <button id="delete-friend-btn" class="w-full bg-red-500 text-white py-3 px-4 rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
+                            删除好友
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
