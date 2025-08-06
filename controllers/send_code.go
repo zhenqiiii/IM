@@ -47,7 +47,7 @@ func Send_Code() gin.HandlerFunc {
 
 		// 参数处理通过，发送验证邮件
 		code := verification.GenCode()
-		err = verification.SendCode(email, code)
+		err = verification.SendCode(email, code, "register") //register场景
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.INTERNAL_ERROR,

@@ -13,12 +13,24 @@ import (
 )
 
 // 注册邮件模板
-const emailTemplate = `<!DOCTYPE html>
+const RegisterTemplate = `<!DOCTYPE html>
 <html>
 <body>
     <p>你好,你正在注册IM即时通讯：</p>
     <p>你的注册验证码是：</p>
     <div style="font-size:24px; font-weight:bold;">{{.Code}}</div>
+</body>
+</html>
+`
+
+// 密码修改模板
+const ResetTemplate = `<!DOCTYPE html>
+<html>
+<body>
+    <p>你好,你正在修改叮当账号的密码：</p>
+    <p>你的验证码是：</p>
+    <div style="font-size:24px; font-weight:bold;">{{.Code}}</div>
+	<p> 如果不是你的操作，请忽略该操作 </p>
 </body>
 </html>
 `
@@ -32,10 +44,16 @@ type templateData struct {
 
 // 这里使用smtp库并显式启用tls加密
 // 发送验证码邮件
-func SendCode(userEmail string, code string) error {
+func SendCode(userEmail string, code string, mode string) error {
 	// 处理邮件html模板
-	// 解析模板
-	tpl, err := template.New("verfication_email").Parse(emailTemplate)
+	// 解析模板:区分注册、密码修改两种场景
+	var tpl *template.Template
+	var err error
+	if mode == "register" {
+		tpl, err = template.New("verfication_email").Parse(RegisterTemplate)
+	} else { // Reset Pwd
+		tpl, err = template.New("verfication_email").Parse(ResetTemplate)
+	}
 	if err != nil {
 		log.Println("解析模板失败: " + err.Error())
 		return err
