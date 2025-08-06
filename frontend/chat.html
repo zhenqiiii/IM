@@ -20,7 +20,7 @@
             <!-- 右侧用户信息 - 绝对右对齐 -->
             <div class="flex items-center justify-end flex-shrink-0">
                 <!-- 用户昵称 - 响应式显示 -->
-                <span id="user-nickname" class="text-sm lg:text-base text-gray-700 font-medium mr-3 lg:mr-4 hidden md:block truncate max-w-32 lg:max-w-48">加载中...</span>
+                <span id="user-nickname" class="text-sm lg:text-base text-gray-700 font-medium mr-3 lg:mr-4 hidden md:block truncate max-w-32 lg:max-w-48 cursor-pointer hover:text-gray-900 hover:underline transition-all duration-200">加载中...</span>
                 
                 <!-- 头像 - 响应式尺寸 -->
                 <img id="user-avatar" src="https://avatars.githubusercontent.com/u/148515933?s=400&u=7cbff7c77a33416cabfe463fff24495157026760&v=4" alt="头像" class="w-10 h-10 lg:w-12 lg:h-12 rounded-full ring-2 ring-white shadow-md mr-3 lg:mr-4">
@@ -173,6 +173,7 @@
                             <div>
                                 <p id="result-nickname" class="font-medium text-gray-900"></p>
                                 <p id="result-account" class="text-sm text-gray-500"></p>
+                                <p id="result-gender" class="text-sm text-gray-400"></p>
                             </div>
                         </div>
                     </div>
@@ -206,6 +207,7 @@
             let currentChatUser = null;
             let socket = null;
             let friends = [];
+            let currentAvatarBase64 = '';
             
             // DOM元素缓存
             const elements = {
@@ -240,6 +242,7 @@
                 resultAvatar: document.getElementById('result-avatar'),
                 resultNickname: document.getElementById('result-nickname'),
                 resultAccount: document.getElementById('result-account'),
+                resultGender: document.getElementById('result-gender'),
                 confirmAddFriendBtn: document.getElementById('confirm-add-friend-btn'),
                 addFriendError: document.getElementById('add-friend-error'),
                 addFriendErrorText: document.getElementById('add-friend-error-text'),
@@ -252,17 +255,11 @@
                 userCenterBackdrop: document.getElementById('user-center-backdrop'),
                 closeUserCenterBtn: document.getElementById('close-user-center-btn'),
                 profileAvatar: document.getElementById('profile-avatar'),
-                profileNickname: document.getElementById('profile-nickname'),
-                profileAccount: document.getElementById('profile-account'),
-                profileEmail: document.getElementById('profile-email'),
                 profileNicknameDisplay: document.getElementById('profile-nickname-display'),
                 profileAccountDisplay: document.getElementById('profile-account-display'),
+                profileGenderDisplay: document.getElementById('profile-gender-display'),
                 profileEmailDisplay: document.getElementById('profile-email-display'),
-                profileViewMode: document.getElementById('profile-view-mode'),
-                profileForm: document.getElementById('profile-form'),
                 editProfileBtn: document.getElementById('edit-profile-btn'),
-                cancelEditBtn: document.getElementById('cancel-edit-btn'),
-                changePasswordBtn: document.getElementById('change-password-btn'),
                 
                 // 查看资料相关
                 profileModal: document.getElementById('profile-modal'),
@@ -272,6 +269,7 @@
                 friendProfileAvatar: document.getElementById('friend-profile-avatar'),
                 friendProfileNickname: document.getElementById('friend-profile-nickname'),
                 friendProfileAccount: document.getElementById('friend-profile-account'),
+                friendProfileGender: document.getElementById('friend-profile-gender'),
                 friendProfileEmail: document.getElementById('friend-profile-email'),
                 deleteFriendBtn: document.getElementById('delete-friend-btn'),
                 
@@ -370,7 +368,7 @@
                                 type: contact.type, // 1私聊 2群聊
                                 last_message: '',
                                 last_message_type: 'text', // 最新消息类型
-                                avatar: 'https://avatars.githubusercontent.com/u/148515933?s=400&u=7cbff7c77a33416cabfe463fff24495157026760&v=4', // 默认头像
+                                avatar: contact.avatar || 'https://via.placeholder.com/40', // 使用联系人头像或默认头像
                                 has_new_message: false, // 是否有新消息
                                 new_message_count: 0 // 新消息数量
                             };
@@ -955,17 +953,7 @@
                 }, 300);
             }
             
-            // 显示只读模式
-            function showViewMode() {
-                elements.profileViewMode.classList.remove('hidden');
-                elements.profileForm.classList.add('hidden');
-            }
-            
-            // 显示编辑模式
-            function showEditMode() {
-                elements.profileViewMode.classList.add('hidden');
-                elements.profileForm.classList.remove('hidden');
-            }
+
             
             // 加载用户资料
             async function loadUserProfile() {
@@ -982,16 +970,24 @@
                     if (data.code === 111) {
                         const user = data.data;
                         elements.profileAvatar.src = user.avatar || 'https://via.placeholder.com/80';
+                        currentAvatarBase64 = user.avatar || '';
                         
                         // 更新显示模式
                         elements.profileNicknameDisplay.textContent = user.nickname || '';
                         elements.profileAccountDisplay.textContent = user.account || '';
-                        elements.profileEmailDisplay.textContent = user.email || '';
                         
-                        // 更新编辑模式
-                        elements.profileNickname.value = user.nickname || '';
-                        elements.profileAccount.value = user.account || '';
-                        elements.profileEmail.value = user.email || '';
+                        // 显示性别图标
+                        let genderIcon = '';
+                        if (user.gender === 1) {
+                            genderIcon = '♂️';
+                        } else if (user.gender === 2) {
+                            genderIcon = '♀️';
+                        } else {
+                            genderIcon = '🔒';
+                        }
+                        elements.profileGenderDisplay.innerHTML = `<span class="text-lg">${genderIcon}</span>`;
+                        
+                        elements.profileEmailDisplay.textContent = user.email || '';
 
                     } else {
                         alert('获取用户信息失败');
@@ -1014,6 +1010,16 @@
                         elements.friendProfileAvatar.src = currentChatUser.avatar || 'https://via.placeholder.com/80';
                         elements.friendProfileNickname.textContent = currentChatUser.nickname || '';
                         elements.friendProfileAccount.textContent = currentChatUser.account || '';
+                        // 显示性别图标（备用信息）
+                        let genderIcon = '';
+                        if (currentChatUser.gender === 1) {
+                            genderIcon = '♂️';
+                        } else if (currentChatUser.gender === 2) {
+                            genderIcon = '♀️';
+                        } else {
+                            genderIcon = '🔒';
+                        }
+                        elements.friendProfileGender.innerHTML = `<span class="text-lg">${genderIcon}</span>`;
                         elements.friendProfileEmail.textContent = currentChatUser.email || '';
 
                         return;
@@ -1033,6 +1039,16 @@
                         elements.friendProfileAvatar.src = userInfo.avatar || 'https://via.placeholder.com/80';
                         elements.friendProfileNickname.textContent = userInfo.nickname || '';
                         elements.friendProfileAccount.textContent = userInfo.account || '';
+                        // 显示性别图标
+                        let genderIcon = '';
+                        if (userInfo.gender === 1) {
+                            genderIcon = '♂️';
+                        } else if (userInfo.gender === 2) {
+                            genderIcon = '♀️';
+                        } else {
+                            genderIcon = '🔒';
+                        }
+                        elements.friendProfileGender.innerHTML = `<span class="text-lg">${genderIcon}</span>`;
                         elements.friendProfileEmail.textContent = userInfo.email || '';
 
                     } else {
@@ -1041,6 +1057,16 @@
                         elements.friendProfileAvatar.src = currentChatUser.avatar || 'https://via.placeholder.com/80';
                         elements.friendProfileNickname.textContent = currentChatUser.nickname || '';
                         elements.friendProfileAccount.textContent = currentChatUser.account || '';
+                        // 显示性别图标（备用信息）
+                         let genderIcon = '';
+                         if (currentChatUser.gender === 1) {
+                             genderIcon = '♂️';
+                         } else if (currentChatUser.gender === 2) {
+                             genderIcon = '♀️';
+                         } else {
+                             genderIcon = '🔒';
+                         }
+                         elements.friendProfileGender.innerHTML = `<span class="text-lg">${genderIcon}</span>`;
                         elements.friendProfileEmail.textContent = currentChatUser.email || '';
 
                     }
@@ -1050,6 +1076,16 @@
                     elements.friendProfileAvatar.src = currentChatUser.avatar || 'https://via.placeholder.com/80';
                     elements.friendProfileNickname.textContent = currentChatUser.nickname || '';
                     elements.friendProfileAccount.textContent = currentChatUser.account || '';
+                    // 显示性别图标（网络错误备用信息）
+                     let genderIcon = '';
+                     if (currentChatUser.gender === 1) {
+                         genderIcon = '♂️';
+                     } else if (currentChatUser.gender === 2) {
+                         genderIcon = '♀️';
+                     } else {
+                         genderIcon = '🔒';
+                     }
+                     elements.friendProfileGender.innerHTML = `<span class="text-lg">${genderIcon}</span>`;
                     elements.friendProfileEmail.textContent = currentChatUser.email || '';
                     
                     alert('网络错误，请稍后重试');
@@ -1061,18 +1097,16 @@
             // 用户中心按钮
             elements.userCenterBtn.addEventListener('click', function() {
                 openUserCenter();
-                // 确保打开时显示只读模式
-                showViewMode();
             });
             
-            // 编辑资料按钮点击事件
+            // 用户昵称点击事件 - 跳转到profile.html
+            elements.userNickname.addEventListener('click', function() {
+                window.location.href = 'profile.html';
+            });
+            
+            // 编辑资料按钮点击事件 - 跳转到profile.html
             elements.editProfileBtn.addEventListener('click', function() {
-                showEditMode();
-            });
-            
-            // 取消编辑按钮点击事件
-            elements.cancelEditBtn.addEventListener('click', function() {
-                showViewMode();
+                window.location.href = 'profile.html';
             });
             
             // 用户中心关闭按钮
@@ -1090,28 +1124,7 @@
             // 查看资料背景遮罩
             elements.profileBackdrop.addEventListener('click', closeProfile);
             
-            // 用户资料表单提交
-            elements.profileForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                try {
-                    // 这里可以添加更新用户信息的API调用
-                    alert('资料更新功能待实现');
-                    
-                    // 更新成功后切换回只读模式
-                    showViewMode();
-                    // 重新加载用户资料以显示最新数据
-                    loadUserProfile();
-                } catch (error) {
-                    console.error('更新用户信息出错:', error);
-                    alert('更新失败，请稍后重试');
-                }
-            });
-            
-            // 修改密码按钮
-            elements.changePasswordBtn.addEventListener('click', function() {
-                alert('修改密码功能待实现');
-            });
+
             
             // 删除好友按钮（在查看资料窗口中）
             elements.deleteFriendBtn.addEventListener('click', async function() {
@@ -1252,6 +1265,16 @@
                     // 显示搜索结果
                     elements.resultNickname.textContent = user.nickname || user.account;
                     elements.resultAccount.textContent = user.account;
+                    // 显示性别图标
+                     let genderIcon = '';
+                     if (user.gender === 1) {
+                         genderIcon = '♂️';
+                     } else if (user.gender === 2) {
+                         genderIcon = '♀️';
+                     } else {
+                         genderIcon = '🔒';
+                     }
+                     elements.resultGender.innerHTML = `<span class="text-lg">${genderIcon}</span>`;
                     if (user.avatar) {
                         elements.resultAvatar.src = user.avatar;
                     }
@@ -1653,73 +1676,36 @@
             <div class="flex-1 overflow-y-auto p-6">
                 <!-- 用户头像 -->
                 <div class="text-center mb-8">
-                    <div class="relative inline-block">
-                        <img id="profile-avatar" src="" alt="头像" class="w-24 h-24 rounded-full mx-auto mb-3 ring-4 ring-white shadow-lg">
-                        <div class="absolute inset-0 rounded-full bg-black/10 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <button id="change-avatar-btn" class="text-sm text-gray-600 hover:text-gray-800 font-medium transition-colors duration-200">更换头像</button>
+                    <img id="profile-avatar" src="" alt="头像" class="w-24 h-24 rounded-full mx-auto ring-4 ring-white shadow-lg">
                 </div>
                 
-                <!-- 用户信息显示/编辑区域 -->
+                <!-- 用户信息显示区域 -->
                 <div class="space-y-6">
-                    <!-- 只读显示模式 -->
-                    <div id="profile-view-mode">
-                        <div class="mb-5">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">昵称</label>
-                            <div id="profile-nickname-display" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
-                        </div>
-                        
-                        <div class="mb-5">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">账号</label>
-                            <div id="profile-account-display" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
-                        </div>
-                        
-                        <div class="mb-8">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">邮箱</label>
-                            <div id="profile-email-display" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
-                        </div>
-                        
-                        <div class="flex space-x-3">
-                            <button type="button" id="edit-profile-btn" class="flex-1 bg-gray-900 text-white py-3 px-4 rounded-xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
-                                编辑资料
-                            </button>
-                            <button type="button" id="change-password-btn" class="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-200 font-medium border border-gray-200/60">
-                                修改密码
-                            </button>
-                        </div>
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">昵称</label>
+                        <div id="profile-nickname-display" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
                     </div>
                     
-                    <!-- 编辑模式 -->
-                    <form id="profile-form" class="space-y-5 hidden">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">昵称</label>
-                            <input type="text" id="profile-nickname" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition-all duration-200">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">账号</label>
-                            <input type="text" id="profile-account" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-600" readonly>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">邮箱</label>
-                            <input type="email" id="profile-email" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-600" readonly>
-                        </div>
-                        
-                        <div class="flex space-x-3 pt-4">
-                            <button type="submit" class="flex-1 bg-gray-900 text-white py-3 px-4 rounded-xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
-                                保存修改
-                            </button>
-                            <button type="button" id="cancel-edit-btn" class="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-200 font-medium border border-gray-200/60">
-                                取消
-                            </button>
-                        </div>
-                    </form>
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">账号</label>
+                        <div id="profile-account-display" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
+                    </div>
+                    
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">性别</label>
+                        <div id="profile-gender-display" class="text-gray-800 py-2"></div>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">邮箱</label>
+                        <div id="profile-email-display" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
+                    </div>
+                    
+                    <div>
+                        <button type="button" id="edit-profile-btn" class="w-full bg-gray-900 text-white py-3 px-4 rounded-xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
+                            编辑资料
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- 退出登录按钮 -->
@@ -1765,6 +1751,11 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">账号</label>
                         <div id="friend-profile-account" class="w-full px-4 py-3 border border-gray-200/60 rounded-xl bg-gray-50/80 text-gray-800"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">性别</label>
+                        <div id="friend-profile-gender" class="text-gray-800 py-2"></div>
                     </div>
                     
                     <div>

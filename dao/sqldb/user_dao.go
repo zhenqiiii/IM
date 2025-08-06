@@ -65,3 +65,13 @@ func InsertUserBasic(user models.UserBasic) error {
 	}
 	return nil
 }
+
+// 修改资料
+func UpdateProfile(userid string, profile models.EditableProfileParams) error {
+	result := db.Model(&models.UserBasic{}).Where("user_id = ?", userid).Update("nickname", profile.Nickname).Update("avatar", profile.Avatar).Update("gender", profile.Gender)
+	if result.Error != nil {
+		log.Println("[DB]UpdateProfile Error:" + result.Error.Error())
+		return result.Error
+	}
+	return nil
+}

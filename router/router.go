@@ -35,11 +35,13 @@ func SetupRouter() *gin.Engine {
 	// 注册时验证码发送
 	r.POST("/verify", controllers.Send_Code())
 
-	// 用户模块
+	// 已登录
 	userBlock := r.Group("/user", middlewares.AuthCheck())
 	{
 		// 用户详情（自己的信息）
 		userBlock.GET("/detail", controllers.UserDetail())
+		// 资料编辑
+		userBlock.POST("/edit", controllers.ProfileEdit())
 		// 查看指定用户的个人信息
 		userBlock.GET("/query", controllers.UserQuery())
 		// 发送接收消息
@@ -50,7 +52,7 @@ func SetupRouter() *gin.Engine {
 		userBlock.GET("/chatlist", controllers.ChatList())
 
 		// 添加好友
-		// 博主写的比较简单，但个人觉得一个完善的添加好友功能应该涉及发送请求，同意等过程
+		// TODO：完善同意流程
 		userBlock.POST("/add", controllers.UserAdd())
 
 		// 删除好友

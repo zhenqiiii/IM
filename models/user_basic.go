@@ -10,7 +10,7 @@ type UserBasic struct {
 	Account   string    `json:"account"`
 	Password  string    `json:"password"`
 	Nickname  string    `json:"nickname"`
-	Gender    int       `json:"gender"` // 0-未知 1-男 2-女
+	Gender    int       `json:"gender" gorm:"default:0"` // 0-未知 1-男 2-女
 	Email     string    `json:"email"`
 	Avatar    string    `json:"avatar"`
 	CreatedAt time.Time `json:"created_at"`
