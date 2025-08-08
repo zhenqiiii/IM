@@ -13,10 +13,10 @@ import (
 )
 
 // 此处的逻辑属于注册流程中的一部分（验证码发送）
-// 验证码发送处理函数:
+// 验证码发送处理函数:只用于注册逻辑
 // 场景：点击注册按钮后发送POST请求
 // 接收参数：email
-func Send_Code() gin.HandlerFunc {
+func SendCode() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 接收邮箱参数
 		email := c.PostForm("email")
@@ -47,7 +47,7 @@ func Send_Code() gin.HandlerFunc {
 
 		// 参数处理通过，发送验证邮件
 		code := verification.GenCode()
-		err = verification.SendCode(email, code, "register") //register场景
+		err = verification.SendCode(email, code, verification.RegisterMode) //register场景
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.INTERNAL_ERROR,

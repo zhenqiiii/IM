@@ -19,6 +19,7 @@ const RegisterTemplate = `<!DOCTYPE html>
     <p>你好,你正在注册IM即时通讯：</p>
     <p>你的注册验证码是：</p>
     <div style="font-size:24px; font-weight:bold;">{{.Code}}</div>
+	<p> 如果这不是你本人的操作，请忽略该邮件 </p>
 </body>
 </html>
 `
@@ -30,7 +31,19 @@ const ResetTemplate = `<!DOCTYPE html>
     <p>你好,你正在修改叮当账号的密码：</p>
     <p>你的验证码是：</p>
     <div style="font-size:24px; font-weight:bold;">{{.Code}}</div>
-	<p> 如果不是你的操作，请忽略该操作 </p>
+	<p> 如果这不是你本人的操作，请忽略该邮件 </p>
+</body>
+</html>
+`
+
+// 找回密码模板
+const RetrieveTemplate = `<!DOCTYPE html>
+<html>
+<body>
+    <p>你好,你正在找回叮当账号的密码：</p>
+    <p>你的验证码是：</p>
+    <div style="font-size:24px; font-weight:bold;">{{.Code}}</div>
+	<p> 如果这不是你本人的操作，请忽略该邮件 </p>
 </body>
 </html>
 `
@@ -39,6 +52,13 @@ type templateData struct {
 	Code string `json:"code"`
 }
 
+// 邮件模式
+const (
+	RegisterMode = "register"
+	ResetMode    = "reset"
+	RetrieveMode = "retrieve"
+)
+
 // 使用qq邮箱时需要设置tls加密，否则就会出现发送验证码成功但依旧报错的情况
 // 而使用网易163邮箱可以直接使用jordan-wright/email包，同时也无需加密
 
@@ -46,13 +66,15 @@ type templateData struct {
 // 发送验证码邮件
 func SendCode(userEmail string, code string, mode string) error {
 	// 处理邮件html模板
-	// 解析模板:区分注册、密码修改两种场景
+	// 解析模板:注册、重置、找回
 	var tpl *template.Template
 	var err error
-	if mode == "register" {
+	if mode == RegisterMode {
 		tpl, err = template.New("verfication_email").Parse(RegisterTemplate)
-	} else { // Reset Pwd
+	} else if mode == ResetMode { // Reset Pwd
 		tpl, err = template.New("verfication_email").Parse(ResetTemplate)
+	} else { //Retrieve Pwd
+		tpl, err = template.New("verfication_email").Parse(RetrieveTemplate)
 	}
 	if err != nil {
 		log.Println("解析模板失败: " + err.Error())

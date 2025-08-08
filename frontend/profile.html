@@ -5,16 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人资料 - DINGDANG</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    screens: {
+                        'xs': '475px',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-gray-100 min-h-screen">
     <!-- 顶部导航栏 -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200/50 text-gray-800 p-3 shadow-sm">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-gray-900 tracking-wide">DINGDANG</h1>
-            <div class="flex items-center space-x-3">
-                <a href="chat.html" class="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200">返回聊天</a>
-                <button id="logout-btn" class="text-sm bg-gray-900 hover:bg-gray-800 text-white px-3 py-1.5 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
-                    退出登录
+    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200/50 text-gray-800 px-2 py-2 shadow-sm overflow-hidden">
+        <div class="w-full flex justify-between items-center min-h-[40px]">
+            <h1 class="text-base sm:text-lg md:text-xl font-bold text-gray-900 tracking-wide flex-shrink-0 truncate">DINGDANG</h1>
+            <div class="flex items-center gap-1 sm:gap-2 md:gap-3 flex-shrink-0 ml-2">
+                <a href="chat.html" class="text-xs sm:text-sm bg-gray-900 hover:bg-gray-800 text-white px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md sm:rounded-lg transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap hidden xs:inline">返回聊天</a>
+                <a href="chat.html" class="text-xs bg-gray-900 hover:bg-gray-800 text-white px-2 py-1 rounded-md transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap xs:hidden">返回</a>
+                <button id="logout-btn" class="text-xs sm:text-sm bg-transparent hover:bg-gray-100 text-gray-600 hover:text-gray-900 border border-gray-300 hover:border-gray-400 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md sm:rounded-lg transition-all duration-200 whitespace-nowrap flex-shrink-0">
+                    退出
                 </button>
             </div>
         </div>
@@ -23,8 +35,8 @@
     <!-- 主要内容区域 -->
     <div class="container mx-auto py-4 px-4">
         <div class="max-w-4xl mx-auto bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-gray-200/50">
-            <div class="p-6">
-                <h2 class="text-2xl font-bold mb-6 text-center text-gray-900">个人资料</h2>
+            <div class="p-4 sm:p-6">
+                <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center text-gray-900">个人资料</h2>
                 
                 <!-- 错误提示 -->
                 <div id="error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg relative mb-4">
@@ -37,13 +49,13 @@
                 </div>
                 
                 <!-- 个人资料表单 -->
-                <form id="profile-form" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <form id="profile-form" class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                     <!-- 左列：头像 -->
-                    <div class="lg:col-span-1 flex flex-col items-center justify-start space-y-3">
+                    <div class="lg:col-span-1 flex flex-col items-center justify-start space-y-3 order-1 lg:order-1">
                         <div class="relative">
-                            <img id="avatar-preview" src="https://via.placeholder.com/120" alt="头像" class="w-28 h-28 rounded-full object-cover ring-4 ring-white shadow-lg">
+                            <img id="avatar-preview" src="https://via.placeholder.com/120" alt="头像" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover ring-4 ring-white shadow-lg">
                             <label for="avatar-input" class="absolute bottom-0 right-0 bg-gray-900 text-white rounded-full p-1.5 cursor-pointer hover:bg-gray-800 transition-all duration-200 shadow-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
@@ -54,7 +66,7 @@
                     </div>
                     
                     <!-- 右列：基本信息 -->
-                    <div class="lg:col-span-1 space-y-4">
+                    <div class="lg:col-span-1 space-y-3 sm:space-y-4 order-2 lg:order-2">
                         <!-- 账号 -->
                         <div>
                             <label for="account" class="block text-sm font-medium text-gray-700 mb-1">账号</label>
@@ -71,7 +83,7 @@
                         <!-- 性别 -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">性别</label>
-                            <div class="flex space-x-4">
+                            <div class="flex flex-wrap gap-3 sm:gap-4">
                                 <label class="inline-flex items-center cursor-pointer">
                                     <input type="radio" name="gender" value="1" class="form-radio h-4 w-4 text-gray-900 focus:ring-gray-500">
                                     <span class="ml-2 text-gray-700">男</span>
@@ -95,29 +107,37 @@
                         </div>
                     </div>
                     
-                    <!-- 修改密码 - 跨越两列 -->
-                    <div class="lg:col-span-2 pt-4 border-t border-gray-200/60">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">修改密码</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label for="current-password" class="block text-sm font-medium text-gray-700 mb-1">当前密码</label>
-                                <input type="password" id="current-password" class="w-full px-3 py-2 border border-gray-200/60 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
-                            </div>
-                            <div>
-                                <label for="new-password" class="block text-sm font-medium text-gray-700 mb-1">新密码</label>
-                                <input type="password" id="new-password" class="w-full px-3 py-2 border border-gray-200/60 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
-                            </div>
-                            <div>
-                                <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">确认新密码</label>
-                                <input type="password" id="confirm-password" class="w-full px-3 py-2 border border-gray-200/60 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
-                            </div>
+                    <!-- 提交按钮 - 跨越两列 -->
+                    <div class="lg:col-span-2 flex justify-center lg:justify-end pt-3 order-3">
+                        <button type="submit" class="w-full sm:w-auto px-6 py-2 border border-transparent rounded-lg shadow-lg text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200">
+                            保存资料
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- 修改密码表单 -->
+                <form id="password-form" class="mt-6 sm:mt-8 p-4 sm:p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
+                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">修改密码</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                        <div>
+                            <label for="current-password" class="block text-sm font-medium text-gray-700 mb-1">当前密码</label>
+                            <input type="password" id="current-password" class="w-full px-3 py-2 border border-gray-200/60 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
+                            <p id="current-password-error" class="mt-1 text-xs text-red-600 hidden"></p>
+                        </div>
+                        <div>
+                            <label for="new-password" class="block text-sm font-medium text-gray-700 mb-1">新密码</label>
+                            <input type="password" id="new-password" class="w-full px-3 py-2 border border-gray-200/60 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
+                            <p id="new-password-error" class="mt-1 text-xs text-red-600 hidden"></p>
+                        </div>
+                        <div>
+                            <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">确认新密码</label>
+                            <input type="password" id="confirm-password" class="w-full px-3 py-2 border border-gray-200/60 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 bg-gray-50/50 transition-all duration-200">
+                            <p id="confirm-password-error" class="mt-1 text-xs text-red-600 hidden"></p>
                         </div>
                     </div>
-                    
-                    <!-- 提交按钮 - 跨越两列 -->
-                    <div class="lg:col-span-2 flex justify-end pt-3">
-                        <button type="submit" class="px-6 py-2 border border-transparent rounded-lg shadow-lg text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200">
-                            保存修改
+                    <div class="flex justify-center sm:justify-end pt-3 sm:pt-4 sm:col-span-2 lg:col-span-3">
+                        <button type="submit" class="w-full sm:w-auto px-6 py-2 border border-transparent rounded-lg shadow-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200">
+                            修改密码
                         </button>
                     </div>
                 </form>
@@ -137,6 +157,7 @@
             
             // DOM元素
             const profileForm = document.getElementById('profile-form');
+            const passwordForm = document.getElementById('password-form');
             const accountInput = document.getElementById('account');
             const nicknameInput = document.getElementById('nickname');
             const genderRadios = document.getElementsByName('gender');
@@ -144,6 +165,9 @@
             const currentPasswordInput = document.getElementById('current-password');
             const newPasswordInput = document.getElementById('new-password');
             const confirmPasswordInput = document.getElementById('confirm-password');
+            const currentPasswordError = document.getElementById('current-password-error');
+            const newPasswordError = document.getElementById('new-password-error');
+            const confirmPasswordError = document.getElementById('confirm-password-error');
             const avatarPreview = document.getElementById('avatar-preview');
             const avatarInput = document.getElementById('avatar-input');
             const errorMessage = document.getElementById('error-message');
@@ -226,6 +250,41 @@
                 }, 5000);
             }
             
+            // 显示密码字段错误
+            function showPasswordError(field, message) {
+                let errorElement;
+                switch(field) {
+                    case 'current':
+                        errorElement = currentPasswordError;
+                        break;
+                    case 'new':
+                        errorElement = newPasswordError;
+                        break;
+                    case 'confirm':
+                        errorElement = confirmPasswordError;
+                        break;
+                }
+                if (errorElement) {
+                    errorElement.textContent = message;
+                    errorElement.classList.remove('hidden');
+                }
+            }
+            
+            // 清除所有密码错误提示
+            function clearPasswordErrors() {
+                currentPasswordError.classList.add('hidden');
+                newPasswordError.classList.add('hidden');
+                confirmPasswordError.classList.add('hidden');
+            }
+            
+            // 显示密码修改成功信息
+            function showPasswordSuccess(message) {
+                // 清除密码错误提示
+                clearPasswordErrors();
+                // 显示成功信息
+                showSuccess(message);
+            }
+            
             // 更新用户信息
             async function updateUserInfo(userData) {
                 try {
@@ -270,13 +329,11 @@
             // 更新密码
             async function updatePassword(currentPassword, newPassword) {
                 try {
-                    // 注意：后端可能没有直接更新密码的API，这里仅作为示例
-                    // 实际项目中需要根据后端API调整
                     const formData = new FormData();
-                    formData.append('current_password', currentPassword);
-                    formData.append('new_password', newPassword);
+                    formData.append('oldpwd', currentPassword);
+                    formData.append('newpwd', newPassword);
                     
-                    const response = await fetch('/user/update_password', {
+                    const response = await fetch('/user/pwdchange', {
                         method: 'POST',
                         headers: {
                             'Authorization': token
@@ -287,20 +344,26 @@
                     const data = await response.json();
                     
                     if (data.code === 111) { // 成功状态码
-                        showSuccess('密码更新成功');
+                        showPasswordSuccess('密码更新成功');
                         return true;
                     } else {
-                        showError(data.msg || '更新密码失败');
+                        // 根据错误信息显示在相应字段下
+                        const errorMsg = data.msg || '更新密码失败';
+                        if (errorMsg.includes('原密码') || errorMsg.includes('当前密码')) {
+                            showPasswordError('current', errorMsg);
+                        } else {
+                            showPasswordError('new', errorMsg);
+                        }
                         return false;
                     }
                 } catch (error) {
                     console.error('更新密码出错:', error);
-                    showError('网络错误，请稍后重试');
+                    showPasswordError('current', '网络错误，请稍后重试');
                     return false;
                 }
             }
             
-            // 表单提交
+            // 资料表单提交
             profileForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
@@ -313,10 +376,6 @@
                         break;
                     }
                 }
-                
-                const currentPassword = currentPasswordInput.value.trim();
-                const newPassword = newPasswordInput.value.trim();
-                const confirmPassword = confirmPasswordInput.value.trim();
                 
                 // 验证表单数据
                 if (!nickname) {
@@ -331,38 +390,55 @@
                     avatar: currentAvatarBase64
                 };
                 
-                const userInfoUpdated = await updateUserInfo(userData);
+                await updateUserInfo(userData);
+            });
+            
+            // 密码表单提交
+            passwordForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
-                // 如果填写了密码相关字段，则更新密码
-                if (currentPassword || newPassword || confirmPassword) {
-                    if (!currentPassword) {
-                        showError('请输入当前密码');
-                        return;
-                    }
-                    
-                    if (!newPassword) {
-                        showError('请输入新密码');
-                        return;
-                    }
-                    
-                    if (newPassword.length < 6) {
-                        showError('新密码长度不能少于6位');
-                        return;
-                    }
-                    
-                    if (newPassword !== confirmPassword) {
-                        showError('两次输入的新密码不一致');
-                        return;
-                    }
-                    
-                    const passwordUpdated = await updatePassword(currentPassword, newPassword);
-                    
-                    if (passwordUpdated) {
-                        // 清空密码字段
-                        currentPasswordInput.value = '';
-                        newPasswordInput.value = '';
-                        confirmPasswordInput.value = '';
-                    }
+                // 清除之前的错误提示
+                clearPasswordErrors();
+                
+                const currentPassword = currentPasswordInput.value.trim();
+                const newPassword = newPasswordInput.value.trim();
+                const confirmPassword = confirmPasswordInput.value.trim();
+                
+                // 验证当前密码
+                if (!currentPassword) {
+                    showPasswordError('current', '请输入当前密码');
+                    return;
+                }
+                
+                // 验证新密码
+                if (!newPassword) {
+                    showPasswordError('new', '请输入新密码');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    showPasswordError('new', '新密码长度至少6位');
+                    return;
+                }
+                
+                // 验证确认密码
+                if (!confirmPassword) {
+                    showPasswordError('confirm', '请确认新密码');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showPasswordError('confirm', '两次输入的新密码不一致');
+                    return;
+                }
+                
+                const passwordUpdated = await updatePassword(currentPassword, newPassword);
+                
+                if (passwordUpdated) {
+                    // 清空密码字段
+                    currentPasswordInput.value = '';
+                    newPasswordInput.value = '';
+                    confirmPasswordInput.value = '';
                 }
             });
             

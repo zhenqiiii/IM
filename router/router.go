@@ -33,7 +33,7 @@ func SetupRouter() *gin.Engine {
 	//用户注册
 	r.POST("/register", controllers.Register())
 	// 注册时验证码发送
-	r.POST("/verify", controllers.Send_Code())
+	r.POST("/verify", controllers.SendCode())
 
 	// 已登录
 	userBlock := r.Group("/user", middlewares.AuthCheck())
@@ -42,6 +42,8 @@ func SetupRouter() *gin.Engine {
 		userBlock.GET("/detail", controllers.UserDetail())
 		// 资料编辑
 		userBlock.POST("/edit", controllers.ProfileEdit())
+		// 密码修改
+		userBlock.POST("/pwdchange", controllers.PwdChange())
 		// 查看指定用户的个人信息
 		userBlock.GET("/query", controllers.UserQuery())
 		// 发送接收消息
