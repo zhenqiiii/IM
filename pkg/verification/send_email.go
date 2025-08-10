@@ -25,7 +25,8 @@ const RegisterTemplate = `<!DOCTYPE html>
 `
 
 // 密码修改模板
-const ResetTemplate = `<!DOCTYPE html>
+// TODO:密码修改的邮件发送流程
+const ChangeTemplate = `<!DOCTYPE html>
 <html>
 <body>
     <p>你好,你正在修改叮当账号的密码：</p>
@@ -36,11 +37,11 @@ const ResetTemplate = `<!DOCTYPE html>
 </html>
 `
 
-// 找回密码模板
-const RetrieveTemplate = `<!DOCTYPE html>
+// 重置密码模板
+const ResetTemplate = `<!DOCTYPE html>
 <html>
 <body>
-    <p>你好,你正在找回叮当账号的密码：</p>
+    <p>你好,你正在重置叮当账号的密码：</p>
     <p>你的验证码是：</p>
     <div style="font-size:24px; font-weight:bold;">{{.Code}}</div>
 	<p> 如果这不是你本人的操作，请忽略该邮件 </p>
@@ -54,9 +55,9 @@ type templateData struct {
 
 // 邮件模式
 const (
-	RegisterMode = "register"
-	ResetMode    = "reset"
-	RetrieveMode = "retrieve"
+	RegisterMode = "register" //注册邮件
+	ChangeMode   = "change"   //修改密码邮件
+	ResetMode    = "reset"    //重置密码邮件
 )
 
 // 使用qq邮箱时需要设置tls加密，否则就会出现发送验证码成功但依旧报错的情况
@@ -71,10 +72,10 @@ func SendCode(userEmail string, code string, mode string) error {
 	var err error
 	if mode == RegisterMode {
 		tpl, err = template.New("verfication_email").Parse(RegisterTemplate)
-	} else if mode == ResetMode { // Reset Pwd
+	} else if mode == ChangeMode { // Change Pwd
+		tpl, err = template.New("verfication_email").Parse(ChangeTemplate)
+	} else { //Reset Pwd
 		tpl, err = template.New("verfication_email").Parse(ResetTemplate)
-	} else { //Retrieve Pwd
-		tpl, err = template.New("verfication_email").Parse(RetrieveTemplate)
 	}
 	if err != nil {
 		log.Println("解析模板失败: " + err.Error())

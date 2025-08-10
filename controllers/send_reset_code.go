@@ -4,50 +4,49 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+	"github.com/zhenqiiii/IM-GO/cont"
 	"github.com/zhenqiiii/IM-GO/dao/redisdb"
 	"github.com/zhenqiiii/IM-GO/dao/sqldb"
 	"github.com/zhenqiiii/IM-GO/pkg/verification"
-
-	"github.com/gin-gonic/gin"
-	"github.com/zhenqiiii/IM-GO/cont"
 )
 
-// 此处的逻辑属于注册流程中的一部分（验证码发送）
-// 验证码发送处理函数:只用于注册逻辑
-// 场景：点击注册按钮后发送POST请求
-// 接收参数：email
-func SendCode() gin.HandlerFunc {
+// 发送忘记密码后的密码重置验证邮件：需要确定用户输入的邮箱存在账号
+func SendResetCode() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 接收邮箱参数
+		// email参数
 		email := c.PostForm("email")
-		// 是否为空
 		if email == "" {
+			log.Println("email为空")
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.MISSING_PARAMS,
-				"msg":  "邮箱不能为空",
+				"msg":  "缺少邮箱",
 			})
 			return
 		}
-		// 是否已注册
+		// 查询账号是否存在
 		exist, err := sqldb.CheckUserBasicExistByEmail(email)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
+			log.Println("查询出错:" + err.Error())
+			c.JSON(http.StatusOK, gin.H{
 				"code": cont.INTERNAL_ERROR,
-				"msg":  "查询数据失败：" + err.Error(),
+				"msg":  "系统异常：" + err.Error(),
 			})
 			return
 		}
-		if exist {
+		// 不存在
+		if !exist {
+			log.Println("该邮箱还未注册账号")
 			c.JSON(http.StatusOK, gin.H{
-				"code": cont.ALREADY_EXISTS,
-				"msg":  "用户已存在",
+				"code": cont.NOT_FOUND,
+				"msg":  "该账号不存在，请先注册",
 			})
 			return
 		}
 
-		// 参数处理通过，发送验证邮件
+		// 发送验证邮件
 		code := verification.GenCode()
-		err = verification.SendCode(email, code, verification.RegisterMode) //register场景
+		err = verification.SendCode(email, code, verification.ResetMode) //忘记密码重置场景
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": cont.INTERNAL_ERROR,
@@ -60,7 +59,7 @@ func SendCode() gin.HandlerFunc {
 		err = redisdb.Set(email, code)
 		if err != nil {
 			log.Println("验证码存储失败：" + err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{
+			c.JSON(http.StatusOK, gin.H{
 				"code": cont.INTERNAL_ERROR,
 				"msg":  "系统出错：" + err.Error(),
 			})
@@ -71,6 +70,5 @@ func SendCode() gin.HandlerFunc {
 			"code": cont.SUCCESS,
 			"msg":  "验证码已发送!",
 		})
-
 	}
 }

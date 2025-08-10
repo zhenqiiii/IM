@@ -29,11 +29,14 @@ func SetupRouter() *gin.Engine {
 
 	// login
 	r.POST("/login", controllers.Login())
-	// r.GET("/index", controllers.GetIndex())
 	//用户注册
 	r.POST("/register", controllers.Register())
 	// 注册时验证码发送
-	r.POST("/verify", controllers.SendCode())
+	r.POST("/registercode", controllers.SendRegisterCode())
+	// 忘记密码后重置
+	r.POST("/reset", controllers.ResetPwd())
+	// 忘记密码发送重置验证邮件
+	r.POST("/resetcode", controllers.SendResetCode())
 
 	// 已登录
 	userBlock := r.Group("/user", middlewares.AuthCheck())

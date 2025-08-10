@@ -9,6 +9,16 @@ import (
 
 /*保存UserBasic相关DAO层函数*/
 
+// 根据Email查询UserBasic
+func GetUserBasicByEmail(email string) (user *models.UserBasic, err error) {
+	result := db.Where("email = ?", email).Limit(1).First(&user)
+	if result.Error != nil {
+		log.Println("[DB]GetUserBasicByEmail Error：" + result.Error.Error())
+		return nil, result.Error
+	}
+	return user, nil
+}
+
 // 根据用户id查询UserBasic
 func GetUserBasicByID(userid string) (user *models.UserBasic, err error) {
 	result := db.Where("user_id = ?", userid).Limit(1).First(&user)
